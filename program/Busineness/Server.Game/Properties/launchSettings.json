@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Master": {
+      "commandName": "Project",
+      "commandLineArgs": "AllServerGetter GlobalInfoGetter"
+    },
+    "Logic": {
+      "commandName": "Project",
+      "commandLineArgs": "LogicServerGetter GlobalInfoGetter"
+    }
+  }
+}

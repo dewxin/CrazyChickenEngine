@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ConfigTool_core": {
+      "commandName": "Project",
+      "commandLineArgs": "-input=Server -cs=..\\share\\SqlDataCommon",
+      "workingDirectory": "D:\\Code\\_Work\\Demo\\CSharpServerDemo\\ServerDemo\\program\\config"
+    }
+  }
+}
