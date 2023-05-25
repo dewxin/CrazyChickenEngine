@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFrameworks>net462;net6.0;</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Block\Block0.Rpc\Block0.Rpc.csproj" />
+	</ItemGroup>
+
+	<UsingTask TaskName="ModifyAssembly" AssemblyFile="..\..\tool\AssemblyTool\bin\Debug\net462\Tool.AssemblyMod.dll" />
+
+	<Target Name="ModifyAsm" AfterTargets="Build">
+		<ModifyAssembly AssemblyFile="$(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll" />
+	</Target>
+
+</Project>

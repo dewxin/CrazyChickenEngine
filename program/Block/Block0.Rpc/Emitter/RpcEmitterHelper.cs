@@ -18,6 +18,7 @@ namespace Block.RPC.Emitter
 
     internal class RpcEmitterHelper
     {
+
         public static List<MethodInfo> GetSortedMethods(Type interfaceType)
         {
             var methodList = interfaceType.GetMethods().ToList();
@@ -25,60 +26,33 @@ namespace Block.RPC.Emitter
             return methodList;
         }
 
-        public static Assembly GetIServiceAssembly()
-        {
-            var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in assemblyList)
-            {
-                var titleAttr = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-                foreach(var attr in titleAttr)
-                {
-                    if (attr.Key.Equals("NagiAsmType") && attr.Value.Equals("IService"))
-                        return assembly;
-                }
-            }
-
-            return null;
-        }
 
         #region Break RpcServiceGroup into RpcService
 
-        private static Dictionary<Type, RpcServiceAttribute> _IntfType2AttrDict;
-        public static Dictionary<Type, RpcServiceAttribute> IntfType2AttrDict
-        {
-            get
-            {
-                if (_IntfType2AttrDict == null)
-                    _IntfType2AttrDict = GetRpcServiceAttrDict();
-                return _IntfType2AttrDict;
-            }
-            private set { _IntfType2AttrDict = value; }
-        }
+        private static Dictionary<Type, RpcServiceAttribute> intfType2AttrDict { get; set; } = new Dictionary<Type, RpcServiceAttribute>();
 
-        public static Dictionary<Type, RpcServiceAttribute> GetRpcServiceAttrDict()
+        public static void AddRpcAttr2Dict(Assembly assembly)
         {
-            Dictionary<Type, RpcServiceAttribute> dict = new Dictionary<Type, RpcServiceAttribute>();
-            var assembly = GetIServiceAssembly();
-            foreach(var type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 var attr = type.GetCustomAttribute<RpcServiceGroupAttribute>();
                 if (attr == null)
                     continue;
 
                 var pairList = BreakGroupServiceToRpcService(type);
-                pairList.ForEach(t => dict.Add(t.Item1, t.Item2));
+                pairList.ForEach(t => intfType2AttrDict.Add(t.Item1, t.Item2));
             }
-
-            return dict;
         }
+
 
         public static RpcServiceAttribute GetRpcServiceAttribute(Type serviceInterfaceType)
         {
-            if(!IntfType2AttrDict.ContainsKey(serviceInterfaceType))
-                return null;
+            if(!intfType2AttrDict.ContainsKey(serviceInterfaceType))
+            {
+                AddRpcAttr2Dict(serviceInterfaceType.Assembly);
+            }
             
-            return IntfType2AttrDict[serviceInterfaceType];
+            return intfType2AttrDict[serviceInterfaceType];
         }
 
 

@@ -1,11 +1,11 @@
 ﻿using Block.RPC.Attr;
 using Block.RPC.Task;
-using Protocol.Param;
+using Share.IService.Param;
 using System;
 
-namespace Protocol.Service.World
+namespace Share.IService.Service.World
 {
-    public interface IClient2World: IWorldService
+    public interface IClient2World : IWorldService
     {
         MethodCallTask<WorldLoginRet> Login(WorldLoginData worldLoginData);
 

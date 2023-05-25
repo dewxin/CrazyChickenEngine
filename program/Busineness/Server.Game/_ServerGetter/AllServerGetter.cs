@@ -1,14 +1,16 @@
 ﻿using Block.Assorted;
-using Server.Common;
 using System.Collections.Generic;
-using Server.Common.Unit;
-using GameServerBase.ServerLogin;
-using GameServerBase.ServerWorld;
-using Server.Game.ServiceEurekaGlobal;
 using Server.Game.ServiceLogic;
 using Block0.Net;
-using Server.Game.ServiceEurekaNode;
 using System.Linq;
+using Share.Common.Unit;
+using System.Net;
+using Engine.Common.ServiceEurekaNode;
+using GameServerBase.ServerLogin;
+using GameServerBase.ServerWorld;
+using Engine.Common.Unit;
+using Engine.IService;
+using Engine.Common.ServiceEurekaGlobal;
 
 namespace Server.Game._ServerGetter
 {
@@ -16,10 +18,10 @@ namespace Server.Game._ServerGetter
     public class AllServerGetter : IServerInfoGetter
     {
 
-        public ServerNode GetServer()
+        public HostNode GetServer()
         {
             var hasGlobalEurekaService = GetServiveList().Any(service => service is GlobalEurekaService);
-            return new GameServerNode()
+            return new HostNode()
             {
                 IsGlobalEureka = hasGlobalEurekaService,
             };
@@ -29,15 +31,15 @@ namespace Server.Game._ServerGetter
         {
             return new SocketConfig()
             {
-                IP = "127.0.0.1",
-                Port = 23333
+                IP = ShareJson.Inst.EurekaMasterNodeIp,
+                Port = ShareJson.Inst.EurekaMasterNodePort
             };
         }
 
 
-        public List<ServerService> GetServiveList()
+        public List<HostService> GetServiveList()
         {
-            return new List<ServerService>()
+            return new List<HostService>()
             {
                 new GlobalEurekaService(),
                 new NodeEurekaService(),

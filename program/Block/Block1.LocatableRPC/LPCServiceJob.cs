@@ -4,6 +4,7 @@ using Block.RPC.Task;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
 using Block1.LocatableRPC;
+using Block1.LocatableRPC.RpcInvoker;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chunk.LocatableRPC
+namespace Block1.LocatableRPC
 {
     public class LPCServiceJob : WorkerJob
     {
@@ -31,12 +32,12 @@ namespace Chunk.LocatableRPC
 
         public override void Init()
         {
-            MethodCallTaskCenter.ThreadLocal.Value = MethodCallTaskCenter;
+            base.Init();
         }
 
         public override void Execute()
         {
-            MethodCallTaskCenter.ThreadLocal.Value = MethodCallTaskCenter;
+            base.Execute();
 
             while (TryGetMsg(out JobMsg item))
             {
@@ -69,7 +70,7 @@ namespace Chunk.LocatableRPC
         {
             if (message.IsMethodCallDoneReply)
             {
-                MethodCallTaskCenter.ThreadLocal.Value.MethodCallFinished(message.MethodCallTaskId, message.MethodParam);
+                MethodCallTaskCenter.MethodCallFinished(message.MethodCallTaskId, message.MethodParam);
                 return null;
             }
 
@@ -91,18 +92,14 @@ namespace Chunk.LocatableRPC
             IRpcInvoker rpcInvoker;
             if(remoteMsg != null)
             {
-                rpcInvoker = new NetworkRpcInvoker()
+                rpcInvoker = new NetworkRpcInvoker(remoteMsg.SourceServiceId, this.MethodCallTaskCenter)
                 {
                     RemoteIPEndPoint = remoteMsg.RemoteIPEndPoint,
-                    DestServiceId = remoteMsg.SourceServiceId
                 };
             }
             else
             {
-                rpcInvoker = new LocalRpcInvoker()
-                {
-                    DestServiceId = message.SourceServiceId,
-                };
+                rpcInvoker = new LocalRpcInvoker(message.SourceServiceId, this.MethodCallTaskCenter);
             }
 
 

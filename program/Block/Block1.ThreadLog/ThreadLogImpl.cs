@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chunk.ThreadLog
+namespace Block1.ThreadLog
 {
     public enum LogLevel
     {
@@ -19,7 +19,7 @@ namespace Chunk.ThreadLog
         Fatal,
     }
 
-    public class LogPipeItem: JobMsg
+    public class LogMsg: JobMsg
     {
         public LogLevel LogLevel { get; set; }
         public string Message { get; set; }
@@ -30,7 +30,7 @@ namespace Chunk.ThreadLog
     {
         private void PostLog(LogLevel logLevel, string message, CallerInfo callerInfo)
         {
-            var pipeItem = new LogPipeItem
+            var pipeItem = new LogMsg
             {
                 LogLevel = logLevel,
                 Message = message,

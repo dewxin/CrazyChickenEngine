@@ -1,7 +1,8 @@
 ﻿using Block1.LocatableRPC;
-using Chunk.LocatableRPC;
+using Engine.Common.Unit;
+using Engine.IService;
 using GameServerBase;
-using Protocol.Param;
+using Share.IService.Service.World;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Server.Game.ServiceLogic
 
         public LogicService()
         {
-            ServiceType = Protocol.Param.ServiceTypeEnum.Logic;
+            ServiceType = ServiceTypeEnum.Logic;
         }
 
         protected override void OnInitAddOn()

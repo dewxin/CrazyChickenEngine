@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Protocol.Param
+namespace Share.IService.Param
 {
     #region Client to Login
 
@@ -24,7 +24,7 @@ namespace Protocol.Param
         FailDueToDbError = 3,
     }
 
-    public class RegisterResult 
+    public class RegisterResult
     {
         public RegisterResultEnum Result { get; set; } = RegisterResultEnum.Succeed;
     }

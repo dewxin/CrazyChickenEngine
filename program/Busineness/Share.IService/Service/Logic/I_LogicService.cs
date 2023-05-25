@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Protocol.Service.Logic
+namespace Share.IService.Service.Logic
 {
-    [RpcServiceGroup(10000,11000)]
+    [RpcServiceGroup(10000, 11000)]
     public interface ILogicService
     {
     }

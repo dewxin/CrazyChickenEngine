@@ -1,8 +1,11 @@
-﻿global using Server.Game;
+﻿global using Engine.Common.Unit;
+global using Engine.IService;
 using CommandLine;
-using Server.Game._ServerGetter;
+using Share.Common.Unit;
 using System;
 using System.Collections.Generic;
+using Engine.ServerEnd;
+using Server.Game._ServerGetter;
 
 namespace Server.Game
 {
@@ -31,7 +34,7 @@ namespace Server.Game
 				String.Join("\n", errs)));
 
 
-			AppBoostrap.Start(result.Value.StartFiles);
+			HostBoostrap.Start(typeof(GlobalInfoGetter),result.Value.StartFiles);
 		}
     }
 }

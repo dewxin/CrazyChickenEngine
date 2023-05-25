@@ -151,6 +151,8 @@ namespace Block.RPC.Emitter
 
             bool hasRet = !(method.ReturnType == typeof(void));
             bool hasParam = method.GetParameters().Length > 0;
+            if (method.GetParameters().Length > 1)
+                throw new ArgumentException("param count cannot be more than 1");
 
             // Object PlayerXXX(Object arg0) 
             if (hasRet && hasParam)
@@ -171,9 +173,8 @@ namespace Block.RPC.Emitter
                 var paramType = method.GetParameters().Single().ParameterType;
                 var retType = method.ReturnType;
 
-                //不支持值类型
                 if (paramType.IsValueType || retType.IsValueType)
-                    throw new ArgumentException("不能是值类型");
+                    throw new ArgumentException("param cannot be value type");
 
 
                 return new ProcedureInfo()
@@ -200,7 +201,7 @@ namespace Block.RPC.Emitter
                 var retType = method.ReturnType;
 
                 if (retType.IsValueType)
-                    throw new ArgumentException("不能是值类型");
+                    throw new ArgumentException("param cannot be value type");
 
                 return new ProcedureInfo()
                 {
@@ -227,7 +228,7 @@ namespace Block.RPC.Emitter
                 var paramType = method.GetParameters().Single().ParameterType;
 
                 if (paramType.IsValueType)
-                    throw new ArgumentException("不能是值类型");
+                    throw new ArgumentException("param cannot be value type");
 
                 return new ProcedureInfo()
                 {

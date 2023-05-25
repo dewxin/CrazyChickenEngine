@@ -4,7 +4,6 @@ using Block.RPC.Task;
 using Block0.Net;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
-using Chunk.LocatableRPC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Block1.LocatableRPC
 {
-    internal class NetworkJob : WorkerJob, IUniqueTaskID
+    internal class NetworkJob : WorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.Network;
 
@@ -41,8 +40,6 @@ namespace Block1.LocatableRPC
                 {
                     ForwardOutputMsg(rpcMsg);
                 }
-
-
 
             }
         }
@@ -82,7 +79,8 @@ namespace Block1.LocatableRPC
                 IsMethodCallDoneReply = netMessage.IsReply,
             };
 
-            if(remoteRpcMsg.IsMethodCallDoneReply)
+            //DeserializeParam
+            if (remoteRpcMsg.IsMethodCallDoneReply)
             {
                 var destServiceJob = WorkerJobManager.GetJob(remoteRpcMsg.DestServiceId) as LPCServiceJob;
                 var methodId = destServiceJob.MethodCallTaskCenter.GetTask(remoteRpcMsg.MethodCallTaskId).MethodId;
@@ -102,5 +100,8 @@ namespace Block1.LocatableRPC
         }
 
 
+
     }
+
+   
 }

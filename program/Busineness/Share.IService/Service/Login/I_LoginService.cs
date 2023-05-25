@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Protocol.Service.Login
+namespace Share.IService.Service.Login
 {
     [RpcServiceGroup(21000, 22000)]
     public interface ILoginService

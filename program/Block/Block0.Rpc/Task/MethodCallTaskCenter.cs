@@ -11,12 +11,9 @@ namespace Block.RPC.Task
 {
     public class MethodCallTaskCenter
     {
-        public static ThreadLocal<MethodCallTaskCenter> ThreadLocal = new ThreadLocal<MethodCallTaskCenter>();
-
         private ushort idGenerator = 1;
 
         private Dictionary<ushort, MethodCallTask> id2TaskDict = new Dictionary<ushort, MethodCallTask>();
-        public event Action<MethodCallTask> OnMethodCallAdded = delegate { };
 
 
         public MethodCallTaskCenter()
@@ -28,8 +25,6 @@ namespace Block.RPC.Task
             methodCallTask.TaskId = idGenerator++;
             var id = methodCallTask.TaskId;
             id2TaskDict[id] = methodCallTask;
-
-            OnMethodCallAdded(methodCallTask);
         }
 
         public bool HasTask(ushort taskId)

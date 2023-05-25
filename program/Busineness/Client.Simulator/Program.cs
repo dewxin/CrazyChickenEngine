@@ -1,7 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using ClientSimulator;
+using Engine.Common.Unit;
+using Share.Common.Unit;
 using System;
+using System.Collections.Generic;
 
 namespace ClientSimulator
 {
@@ -9,11 +12,21 @@ namespace ClientSimulator
     {
         static void Main(string[] args)
         {
-            var node = new ClientNode();
-            node.Init();
+            var node = new HostNode();
+            var service = new ClientService();
+            var config =new AllConfig() { 
+                ServiceList = new List<HostService> { service },
+            };
+            node.Init(config);
             node.Run();
 
-            //TODO Command can be delivered to ServerThread by Console
+            service.Init();
+            while (true)
+            {
+                if(service.NeedsHandleMsg)
+                    service.Execute();
+            }
+
             while (Console.ReadKey().KeyChar != 'q')
             {
                 Console.WriteLine();

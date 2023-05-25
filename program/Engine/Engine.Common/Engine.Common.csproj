@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFrameworks>net462;net6.0;</TargetFrameworks>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Block\Block1.LocatableRPC\Block1.LocatableRPC.csproj" />
+    <ProjectReference Include="..\..\Block\Block1.ThreadLog\Block1.ThreadLog.csproj" />
+    <ProjectReference Include="..\Engine.IService\Engine.IService.csproj" />
+  </ItemGroup>
+
+</Project>

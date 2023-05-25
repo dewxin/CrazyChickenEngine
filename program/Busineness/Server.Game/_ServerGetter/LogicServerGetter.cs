@@ -1,23 +1,23 @@
 ﻿using Block.Assorted;
-using Server.Common;
-using Server.Game.ServiceEurekaNode;
 using Server.Game.ServiceLogic;
 using System;
 using System.Collections.Generic;
-using Server.Common.Unit;
 using GameServerBase.ServerLogin;
 using GameServerBase.ServerWorld;
-using Server.Game.ServiceEurekaGlobal;
 using Block0.Net;
-
+using Share.Common.Unit;
+using Engine.Common.Unit;
+using Engine.Common.ServiceEurekaNode;
+using Engine.Common.Unit;
+using Engine.IService;
 namespace Server.Game._ServerGetter
 {
     public class LogicServerGetter : IServerInfoGetter
     {
 
-        public ServerNode GetServer()
+        public HostNode GetServer()
         {
-            return new GameServerNode();
+            return new HostNode();
         }
 
         public SocketConfig GetSocketConfig()
@@ -30,9 +30,9 @@ namespace Server.Game._ServerGetter
         }
 
 
-        public List<ServerService> GetServiveList()
+        public List<HostService> GetServiveList()
         {
-            return new List<ServerService>()
+            return new List<HostService>()
             {
                 new NodeEurekaService(),
                 new LogicService(),

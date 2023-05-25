@@ -7,62 +7,65 @@ using System.Threading;
 
 namespace Block0.Threading.Worker
 {
-    public class WorkerThreadHelper
-    {
-        public static ThreadLocal<Worker> LocalThreadWorker { get; set; } = new ThreadLocal<Worker>();
-    }
+
 
     public partial class Worker
     {
-        public WorkerJob CurrentJob { get; internal set; }
-        public static bool WorkerJobInited { get; set; }
+        public WorkerJob CurrentJob { get; set; }
 
         public bool NeedStop { get; protected set; }
         AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
         public double ElapsedMs { get; protected set; }
 
-        //0表示 没有初始ID
-        public byte CurrentJobID => CurrentJob.JobID;
-
-
         public void Run(Object threadContext)
         {
-            WorkerThreadHelper.LocalThreadWorker.Value = this;
+            TryInitJobs();
 
-            //初始化的时候猥琐一下
-            lock(typeof(WorkerManager))
+            ExecuteJobs();
+
+            shutdownEvent.Set();
+        }
+
+
+        private void TryInitJobs()
+        {
+            lock (typeof(WorkerJobManager))
             {
-                if(!WorkerJobInited)
+                if (WorkerJobManager.workerJobInited)
+                    return;
+
+                foreach (var workerJob in WorkerJobManager.id2ManagedJobDict.Values)
                 {
-                    foreach (var workerJob in WorkerJobManager.id2JobDict.Values)
-                    {
-                        CurrentJob = workerJob;
-                        workerJob.Init();
-                    }
+                    CurrentJob = workerJob;
 
-                    WorkerJobInited= true;
+                    workerJob.Init();
                 }
+
+                WorkerJobManager.workerJobInited = true;
             }
+        }
 
 
+        private void ExecuteJobs()
+        {
             Stopwatch stopwatch = Stopwatch.StartNew();
             var lastTimeMs = stopwatch.Elapsed.TotalMilliseconds;
 
             while (!NeedStop)
             {
-                var nowTimeMs = stopwatch.Elapsed.TotalMilliseconds; 
+                var nowTimeMs = stopwatch.Elapsed.TotalMilliseconds;
                 var elapsedMs = nowTimeMs - lastTimeMs;
                 lastTimeMs = nowTimeMs;
 
                 ElapsedMs = elapsedMs;
 
-                while(WorkerJobManager.HasJobToHandle(out var workerJob) /*并且剩余时间片的估算值能够处理此次task*/)
+                while (WorkerJobManager.HasJobToHandle(out var workerJob) /*并且剩余时间片的估算值能够处理此次task*/)
                 {
                     var prevWorker = Interlocked.CompareExchange(ref workerJob.CurrentWorker, this, null);
-                    
+
                     //不是null说明被其他Worker抢了
-                    if(prevWorker != null)  
+                    if (prevWorker != null)
                         continue;
 
                     CurrentJob = workerJob;
@@ -75,8 +78,6 @@ namespace Block0.Threading.Worker
 
                 Thread.Yield();
             }
-
-            shutdownEvent.Set();
         }
 
 

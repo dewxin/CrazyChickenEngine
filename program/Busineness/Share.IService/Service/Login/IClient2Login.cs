@@ -1,16 +1,15 @@
 ﻿using Block.RPC.Attr;
 using Block.RPC.Task;
-using Protocol.Param;
-using Protocol.Service.Login;
+using Share.IService.Param;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Protocol.Service.Login
+namespace Share.IService.Service.Login
 {
-    public interface IClient2Login:ILoginService
+    public interface IClient2Login : ILoginService
     {
         MethodCallTask<RegisterResult> RegisterAccount(AccountData accountData);
 

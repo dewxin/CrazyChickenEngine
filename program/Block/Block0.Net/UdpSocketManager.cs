@@ -29,7 +29,7 @@ namespace Block0.Net
         public static void Init(Action<NetMessage,IPEndPoint> onReceiveMessageAction)
         {
             OnReceiveMessage= onReceiveMessageAction;
-            ListenPort = SocketHelper.GetPortByConfig(SocketConfig.Inst);
+            ListenPort = UdpSocketHelper.GetPortByConfig(SocketConfig.Inst);
 
             Thread thread = new Thread(StartListener);
 
@@ -40,9 +40,10 @@ namespace Block0.Net
         {
 
             UdpClient = new UdpClient(ListenPort);
-            IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, ListenPort);
+            //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, ListenPort);
+            IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any,0);
 
-            try
+            //try
             {
                 while (true)
                 {
@@ -52,14 +53,14 @@ namespace Block0.Net
                     OnReceiveMessage?.Invoke(netMessage, remoteEndPoint);
                 }
             }
-            catch (SocketException e)
-            {
-                Console.WriteLine(e);
-            }
-            finally
-            {
-                UdpClient.Close();
-            }
+            //catch (SocketException e)
+            //{
+            //    Console.WriteLine(e);
+            //}
+            //finally
+            //{
+            //    UdpClient.Close();
+            //}
         }
     }
 }

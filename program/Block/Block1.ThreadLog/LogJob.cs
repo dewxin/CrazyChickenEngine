@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Block.Assorted.Logging;
 using Block0.Threading.Worker;
 
-namespace Chunk.ThreadLog
+namespace Block1.ThreadLog
 {
-    public class LogJob : WorkerJob, IUniqueTaskID
+    public class LogJob : WorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.Log;
 
@@ -32,7 +32,7 @@ namespace Chunk.ThreadLog
         {
             while (TryGetMsg(out var item))
             {
-                if (item.MethodParam is LogPipeItem logItem)
+                if (item.MethodParam is LogMsg logItem)
                 {
                     switch (logItem.LogLevel)
                     {

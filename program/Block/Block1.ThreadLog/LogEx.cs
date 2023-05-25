@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chunk.ThreadLog
+namespace Block1.ThreadLog
 {
     public static class LogEx
     {

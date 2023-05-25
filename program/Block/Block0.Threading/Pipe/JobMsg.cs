@@ -12,6 +12,9 @@ namespace Block0.Threading.Pipe
         internal protected byte DestJobId { get; set;}
         public object MethodParam { get; set; }
 
+
+        //栈信息
+        public StackInfo StackInfo { get; set; }
         //public long Timestamp { get; set; }
     }
 }

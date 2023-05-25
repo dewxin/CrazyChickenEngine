@@ -24,11 +24,11 @@ namespace Block.RPC.Task
             return ret;
         }
 
-        public static MethodCallTask<TResult> Start(ushort methodId)
+        public static MethodCallTask<TResult> Start(ushort methodId, MethodCallTaskCenter taskCenter)
         {
             var task = new MethodCallTask<TResult>();
             task.MethodId = methodId;
-            MethodCallTaskCenter.ThreadLocal.Value.Add(task);
+            taskCenter.Add(task);
             return task;
         }
 

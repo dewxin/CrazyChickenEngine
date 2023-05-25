@@ -1,17 +1,8 @@
-﻿using Protocol;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Protocol.Service;
-using Protocol.Param;
-using Protocol.Service.World;
-using Protocol.Service.Login;
-using Block.RPC.Task;
+﻿using Block.RPC.Task;
 using Server.Game.ServiceWorld.Manager;
-using System.Diagnostics;
 using Block.Assorted.Logging;
+using Share.IService.Service.World;
+using Share.IService.Param;
 
 namespace GameServerBase.ServerWorld
 {
@@ -36,7 +27,7 @@ namespace GameServerBase.ServerWorld
 
             if(!startMatchSucceed)
             {
-                Log.Info($"fail");
+                Log.Error($"fail");
                 return new MatchResult { MatchSucceed = false, };
             }
 

@@ -10,18 +10,27 @@ namespace Block0.Threading.Worker
 
     public static class WorkerJobManager
     {
-        private static byte IDGenerator = (byte)WorkerJobID.SelfDefineMax;
+        private static byte IDGenerator = (byte)WorkerJobID.Anonymous;
 
-        internal static Dictionary<ushort, WorkerJob> id2JobDict = new Dictionary<ushort, WorkerJob>();
+        internal static bool workerJobInited;
+
+        internal static Dictionary<ushort, WorkerJob> id2ManagedJobDict = new Dictionary<ushort, WorkerJob>();
+
+        internal static Dictionary<ushort, WorkerJob> id2UnManagedJobDict = new Dictionary<ushort, WorkerJob>();
 
         public static WorkerJob GetJob(ushort id)
         {
-            return id2JobDict[id];
+            if(id2ManagedJobDict.TryGetValue(id, out var managedJob))
+                return managedJob;
+            if (id2UnManagedJobDict.TryGetValue(id, out var unManagedJob))
+                return unManagedJob;
+
+            return null;
         }
 
         public static void AddJob(WorkerJob workerJob)
         {
-            if (workerJob is IUniqueTaskID workerID)
+            if (workerJob is IUniqueJobID workerID)
             {
                 workerJob.JobID = workerID.UniqueID;
             }
@@ -32,21 +41,16 @@ namespace Block0.Threading.Worker
                     workerJob.JobID = IDGenerator++;
             }
 
-            //Worker worker = new Worker();
-            //{
-            //    worker.WorkerTask = workerTask;
-            //    workerTask.CurrentWorker = worker;
-            //}
 
-
-            id2JobDict.Add(workerJob.JobID, workerJob);
-            //return worker;
+            if (workerJob is IUnManagedJob)
+                id2UnManagedJobDict.Add(workerJob.JobID, workerJob);
+            else
+                id2ManagedJobDict.Add(workerJob.JobID, workerJob);
         }
-
 
         public static bool HasJobToHandle(out WorkerJob workerJob)
         {
-            foreach(var job in id2JobDict.Values)
+            foreach(var job in id2ManagedJobDict.Values)
             {
                 if(job.NeedsHandleMsg) 
                 {

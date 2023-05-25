@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFrameworks>net6.0;net462;</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+    <ProjectReference Include="..\..\Block\Block1.ThreadLog\Block1.ThreadLog.csproj" />
+    <ProjectReference Include="..\..\Block\Block1.LocatableRPC\Block1.LocatableRPC.csproj" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+	  <None Update="Config\Share.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+
+</Project>

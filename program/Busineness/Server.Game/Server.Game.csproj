@@ -16,19 +16,23 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
+
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Server.Base\Server.Base.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.Common\Engine.Common.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.ServerEnd\Engine.ServerEnd.csproj" />
+    <ProjectReference Include="..\Share.Common\Share.Common.csproj" />
     <ProjectReference Include="..\Share.IService\Share.IService.csproj" />
   </ItemGroup>
 
+
   <ItemGroup>
-    <Compile Update="_ServerGetter\GlobalInfoGetter.cs">
+    <Compile Update="_ServerGetter\AllServerGetter.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Update="_ServerGetter\AllServerGetter.cs">
+    <Compile Update="_ServerGetter\GlobalInfoGetter.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Update="_ServerGetter\LogicServerGetter.cs">

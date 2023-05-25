@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Block\Block1.LocatableRPC\Block1.LocatableRPC.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.Common\Engine.Common.csproj" />
+    <ProjectReference Include="..\Share.Common\Share.Common.csproj" />
     <ProjectReference Include="..\Share.IService\Share.IService.csproj" />
   </ItemGroup>
 

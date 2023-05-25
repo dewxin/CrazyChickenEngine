@@ -1,12 +1,10 @@
 ﻿using Block.Assorted;
 using Block1.LocatableRPC;
-using Chunk.LocatableRPC;
-using Protocol.Param;
-using Server.Common;
-using Server.Common.Unit;
+using Share.Common.Unit;
 using System.Collections.Generic;
 using System.Net;
-
+using Engine.Common.Unit;
+using Engine.IService;
 namespace Server.Game._ServerGetter
 {
     public class GlobalInfoGetter : IGlobalInfoGetter
@@ -14,9 +12,12 @@ namespace Server.Game._ServerGetter
         public GlobalConfig GetGlobalConfig()
         {
 
+            var shareJson = ShareJson.Inst;
+
+            IPAddress ipAddress = IPAddress.Parse(shareJson.EurekaMasterNodeIp);
             return new GlobalConfig()
             {
-                EurekaMasterIPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23333),
+                EurekaMasterIPEndPoint = new IPEndPoint(ipAddress, shareJson.EurekaMasterNodePort),
             };
         }
     }

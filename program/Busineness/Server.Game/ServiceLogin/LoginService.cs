@@ -1,5 +1,5 @@
-﻿using GameServerBase;
-using Protocol;
+﻿
+using GameServerBase;
 
 namespace GameServerBase.ServerLogin
 {
@@ -7,7 +7,7 @@ namespace GameServerBase.ServerLogin
     {
         public LoginService()
         {
-            ServiceType = Protocol.Param.ServiceTypeEnum.Login;
+            ServiceType = ServiceTypeEnum.Login;
         }
 
         protected override void OnInitAddOn()

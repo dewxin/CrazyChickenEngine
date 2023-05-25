@@ -81,7 +81,7 @@ namespace Block.RPC.Emitter
                 throw new ArgumentException("param needs to be an interface type");
 
 
-            //不加lock由于网络会话层是多线程的，会出Bug
+            //TODO 不加lock由于网络会话层是多线程的，会出Bug
             lock(interfaceType2ImplDict)
             {
                 interfaceType2ImplDict.TryGetValue(interfaceType, out Type implType);

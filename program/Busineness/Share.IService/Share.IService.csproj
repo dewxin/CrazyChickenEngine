@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Client\**" />
-    <EmbeddedResource Remove="Client\**" />
-    <None Remove="Client\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Block\Block0.Rpc\Block0.Rpc.csproj" />
   </ItemGroup>
 

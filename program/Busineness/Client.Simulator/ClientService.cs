@@ -1,8 +1,11 @@
-﻿using Chunk.LocatableRPC;
-using Protocol.Param;
-using Protocol.Service;
-using Protocol.Service.Login;
-using Protocol.Service.World;
+﻿using Block0.Threading.Worker;
+using Block1.LocatableRPC;
+using Engine.Common.Unit;
+using Engine.IService;
+using Share.Common.Unit;
+using Share.IService.Param;
+using Share.IService.Service.Login;
+using Share.IService.Service.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +15,11 @@ using System.Threading.Tasks;
 
 namespace ClientSimulator
 {
-    internal class ClientService: LPCServiceJob
+    internal class ClientService: HostService, IUnManagedJob
     {
 
-        public ClientNode ClientNode { get; set; }
-
-        public override void Init()
+        protected override void OnInit()
         {
-            base.Init();
-
 
             GetWorldNode();
         }
@@ -28,12 +27,15 @@ namespace ClientSimulator
         public void GetWorldNode()
         {
 
-            var eurekaMasterEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 23333);
+            var shareJson = ShareJson.Inst;
+            var eurekaMasterEndPoint = new IPEndPoint(IPAddress.Parse(shareJson.EurekaMasterNodeIp), shareJson.EurekaMasterNodePort);
+
+            //var eurekaMasterEndPoint = new IPEndPoint(IPAddress.Parse("39.184.9.18"), 8030);
 
             var param = new ServiceTypeWrapper { ServiceType = ServiceTypeEnum.World };
 
-            //现在是EurekaMasterService 是4
-            var getServiceTask = ServiceFinder.ByEndPoint(eurekaMasterEndPoint, 4)
+            var getServiceTask = 
+                ServiceFinder.ByEndPoint(eurekaMasterEndPoint, (byte)ServiceJobID.EurekaMasterID)
                 .GetRpc<IEurekaMasterService>().GetNodesContainingService(param);
 
 
@@ -65,29 +67,36 @@ namespace ClientSimulator
                 var worldClient = ServiceFinder.ByEndPoint(eurekaMasterEndPoint, worldInfo.ServiceID).GetRpc<IClient2World>();
 
 
-                var random = new Random((int)DateTime.Now.Ticks);
-                string name = "dd" + random.Next();
-
-                var loginTask = worldClient.Login(new WorldLoginData { Name = name });
-
-                loginTask.ContinueWith(() =>
-                {
-                    var loginRet = loginTask.MethodCallResult;
-                    var matchTask = worldClient.EnqueueForMatch(new PlayerMatchRequest() {Id = loginRet.PlayerId,Name = loginRet.PlayerName });
-
-                    matchTask.ContinueWith(() =>
-                    {
-                        var result = matchTask.MethodCallResult;
-                        Console.WriteLine($"{result.MatchSucceed}, {result.PlayerData[0].Name} vs {result.PlayerData[1].Name}");
-
-                    });
-                });
+                TryLogin(worldClient);
+                TryLogin(worldClient);
                 
-
 
             });
                 
 
+        }
+
+
+        private void TryLogin(IClient2World worldClient)
+        {
+
+            var random = new Random((int)DateTime.Now.Ticks);
+            string name = "dd" + random.Next();
+
+            var loginTask = worldClient.Login(new WorldLoginData { Name = name });
+
+            loginTask.ContinueWith(() =>
+            {
+                var loginRet = loginTask.MethodCallResult;
+                var matchTask = worldClient.EnqueueForMatch(new PlayerMatchRequest() { Id = loginRet.PlayerId, Name = loginRet.PlayerName });
+
+                matchTask.ContinueWith(() =>
+                {
+                    var result = matchTask.MethodCallResult;
+                    Console.WriteLine($"{result.MatchSucceed}, {result.PlayerData[0].Name} vs {result.PlayerData[1].Name}");
+
+                });
+            });
         }
     }
 }

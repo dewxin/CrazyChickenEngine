@@ -16,7 +16,7 @@ namespace GameServerBase.ServerWorld
 
         public WorldService()
         {
-            ServiceType = Protocol.Param.ServiceTypeEnum.World;
+            ServiceType = ServiceTypeEnum.World;
 
             OnAfterMessage += MatchManager.CheckTaskState;
         }

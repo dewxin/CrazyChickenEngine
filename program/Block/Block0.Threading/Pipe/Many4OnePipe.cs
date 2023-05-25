@@ -13,13 +13,9 @@ namespace Block0.Threading.Pipe
     {
         internal int SenderCount;
 
-        public override bool TryEnqueue(T item)
-        {
-            return SpinEnqueue(item);
-        }
 
-
-        //TODO 这里需要注意如果目标线程处于休眠状态的话，这里会一直自旋。
+        //TODO 这里需要注意如果 已经占有SenderCount的线程处于休眠状态,
+        //这里会一直自旋。
         public bool SpinEnqueue(T msg)
         {
             while (Interlocked.CompareExchange(ref SenderCount, 1, 0) != 0)

@@ -2,11 +2,11 @@
   "profiles": {
     "Master": {
       "commandName": "Project",
-      "commandLineArgs": "AllServerGetter GlobalInfoGetter"
+      "commandLineArgs": "_ServerGetter/AllServerGetter.cs  _ServerGetter/GlobalInfoGetter.cs"
     },
     "Logic": {
       "commandName": "Project",
-      "commandLineArgs": "LogicServerGetter GlobalInfoGetter"
+      "commandLineArgs": "_ServerGetter/LogicServerGetter.cs _ServerGetter/GlobalInfoGetter.cs"
     }
   }
 }

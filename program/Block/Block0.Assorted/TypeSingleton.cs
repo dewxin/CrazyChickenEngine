@@ -11,6 +11,7 @@ namespace Block.Assorted
         public static Dictionary<Type, object> singletonDict = new Dictionary<Type, object>();
 
         public static void Set<T>(object single)
+            where T : class
         {
             singletonDict.Add(typeof(T), single);
         }

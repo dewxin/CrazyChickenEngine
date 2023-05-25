@@ -15,7 +15,7 @@ namespace Block.RPC.Task
         private List<BaseTask> continueTaskList = new List<BaseTask> { };
 
         public int WaitCount { get; private set; } = 0;
-        //当前任务完成后 waitTaskList 中任务的 waitCount -1， 如果为0，则执行那个任务
+        //当前任务完成后, waitTaskList 中任务的 waitCount -1， 如果为0，则执行那个任务
         private List<BaseTask> waitTaskList = new List<BaseTask>();
 
 
