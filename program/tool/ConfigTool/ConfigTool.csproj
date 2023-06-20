@@ -19,10 +19,6 @@
     <PackageReference Include="NPOI" Version="2.5.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectCommon\ProjectCommon.csproj" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\config\core_tool\</OutputPath>
     <DefineConstants>TRACE;NETSTANDARD</DefineConstants>

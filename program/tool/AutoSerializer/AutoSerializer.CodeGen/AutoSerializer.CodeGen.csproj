@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Include="_template\SerializerCenter.cs" />
+    <EmbeddedResource Include="_template\_ListSerializer_.cs" />
+    <EmbeddedResource Include="_template\_Type_Serializer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoSerializer.Base\AutoSerializer.Base.csproj" />
+  </ItemGroup>
+
+</Project>

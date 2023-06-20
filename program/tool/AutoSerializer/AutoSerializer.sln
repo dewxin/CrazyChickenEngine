@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSerializer.CodeGen", "AutoSerializer.CodeGen\AutoSerializer.CodeGen.csproj", "{A05F0FB5-3DB7-4191-BD60-34B4FDA13CC4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSerializer.Base", "AutoSerializer.Base\AutoSerializer.Base.csproj", "{8B5B9528-D751-416C-A480-6180E64A1AA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSerializer.Test", "AutoSerializer.Test\AutoSerializer.Test.csproj", "{3919BF39-8F66-4CF1-831C-6A7DB6A3150E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{15B4466F-FE24-4FFB-BE0C-1FC3A448569C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerializerProject", "Example\SerializerProject\SerializerProject.csproj", "{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParamProject", "Example\ParamProject\ParamProject.csproj", "{943C7192-4ED4-45DF-B59B-796E510681ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserProject", "Example\UserProject\UserProject.csproj", "{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A05F0FB5-3DB7-4191-BD60-34B4FDA13CC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A05F0FB5-3DB7-4191-BD60-34B4FDA13CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A05F0FB5-3DB7-4191-BD60-34B4FDA13CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A05F0FB5-3DB7-4191-BD60-34B4FDA13CC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B5B9528-D751-416C-A480-6180E64A1AA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5B9528-D751-416C-A480-6180E64A1AA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5B9528-D751-416C-A480-6180E64A1AA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5B9528-D751-416C-A480-6180E64A1AA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3919BF39-8F66-4CF1-831C-6A7DB6A3150E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3919BF39-8F66-4CF1-831C-6A7DB6A3150E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3919BF39-8F66-4CF1-831C-6A7DB6A3150E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3919BF39-8F66-4CF1-831C-6A7DB6A3150E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{943C7192-4ED4-45DF-B59B-796E510681ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{943C7192-4ED4-45DF-B59B-796E510681ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{943C7192-4ED4-45DF-B59B-796E510681ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{943C7192-4ED4-45DF-B59B-796E510681ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{50FA8AAF-BC02-4B6B-B8A0-BF53F33A7CC2} = {15B4466F-FE24-4FFB-BE0C-1FC3A448569C}
+		{943C7192-4ED4-45DF-B59B-796E510681ED} = {15B4466F-FE24-4FFB-BE0C-1FC3A448569C}
+		{C4DA1BE1-7FC0-48C3-B44E-C35AB6BC3232} = {15B4466F-FE24-4FFB-BE0C-1FC3A448569C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA51FD08-24BE-4C4C-B809-CAF4E2E1D38F}
+	EndGlobalSection
+EndGlobal

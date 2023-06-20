@@ -2,6 +2,7 @@
 using Block.RPC.Emitter;
 using Block.RPC.Task;
 using Block0.Net;
+using Block0.Net.Serialize;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
 using System;
@@ -85,14 +86,14 @@ namespace Block1.LocatableRPC
                 var destServiceJob = WorkerJobManager.GetJob(remoteRpcMsg.DestServiceId) as LPCServiceJob;
                 var methodId = destServiceJob.MethodCallTaskCenter.GetTask(remoteRpcMsg.MethodCallTaskId).MethodId;
                 Type retType = RpcClientEmitter.GetMethodRetType(methodId);
-                remoteRpcMsg.MethodParam = SerializerHelper.Deserialize(retType, netMessage.MethodParamBytes);
+                remoteRpcMsg.MethodParam = SerializerStub.Deserialize(retType, netMessage.MethodParamBytes);
             }
             else
             {
                 Type paramType = RpcServerCodeEmitter.GetMethodParamType(remoteRpcMsg.MethodId);
 
                 if(paramType!=null && paramType != typeof(void)) 
-                    remoteRpcMsg.MethodParam = SerializerHelper.Deserialize(paramType, netMessage.MethodParamBytes);
+                    remoteRpcMsg.MethodParam = SerializerStub.Deserialize(paramType, netMessage.MethodParamBytes);
             }
 
 

@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 13.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigTool_core", "ConfigTool.csproj", "{4A46E9BB-110E-4B68-B8F5-3AD7E29D0DE1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectCommon", "..\ProjectCommon\ProjectCommon.csproj", "{70E2714F-CC45-4149-AE68-B6324ADB1683}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlDataCommon", "..\SqlDataCommon\SqlDataCommon.csproj", "{5617A0DF-A3C4-477D-832E-07F5CB90B16A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigTool", "ConfigTool.csproj", "{4A46E9BB-110E-4B68-B8F5-3AD7E29D0DE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{4A46E9BB-110E-4B68-B8F5-3AD7E29D0DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A46E9BB-110E-4B68-B8F5-3AD7E29D0DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A46E9BB-110E-4B68-B8F5-3AD7E29D0DE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70E2714F-CC45-4149-AE68-B6324ADB1683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70E2714F-CC45-4149-AE68-B6324ADB1683}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70E2714F-CC45-4149-AE68-B6324ADB1683}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70E2714F-CC45-4149-AE68-B6324ADB1683}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5617A0DF-A3C4-477D-832E-07F5CB90B16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5617A0DF-A3C4-477D-832E-07F5CB90B16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5617A0DF-A3C4-477D-832E-07F5CB90B16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5617A0DF-A3C4-477D-832E-07F5CB90B16A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

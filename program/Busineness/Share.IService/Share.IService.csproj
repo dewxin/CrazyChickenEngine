@@ -9,9 +9,17 @@
     <ProjectReference Include="..\..\Block\Block0.Rpc\Block0.Rpc.csproj" />
   </ItemGroup>
 
+	<Target Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'"
+			Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="..\..\tool\AutoSerializer\AutoSerializer.CodeGen\bin\Debug\AutoSerializer.CodeGen.exe -a $(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll -c ..\Share.Serializer\ -n Share.Serializer" />
+	</Target>
+	<!--
+
    <UsingTask TaskName="ModifyAssembly" AssemblyFile="..\..\tool\AssemblyTool\bin\Debug\net462\Tool.AssemblyMod.dll" />
 
 	<Target Name="ModifyAsm" AfterTargets="Build">
 		<ModifyAssembly AssemblyFile="$(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll" />
 	</Target>
+
+-->
 </Project>

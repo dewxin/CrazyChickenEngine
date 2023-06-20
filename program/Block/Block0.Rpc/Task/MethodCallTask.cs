@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoSerializer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Block.RPC.Task
 {
 
     //TODO 拆分出 调用方 MethodCallerTask 和 被调用方 MethodCalleeTask 两个类
+    [Ignore]
+    [Transparent]
     public class MethodCallTask<TResult> : MethodCallTask
         where TResult : class
     {

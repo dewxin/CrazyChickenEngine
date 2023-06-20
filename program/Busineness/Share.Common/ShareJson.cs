@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Share.Common.Unit
 {
-    //TODO 找个办法把json文件自动拷贝到客户端和服务端的对应位置。最好是使用公共组件实现。
     public class ShareJson
     {
         public string EurekaMasterNodeIp { get; set; }
@@ -35,7 +34,6 @@ namespace Share.Common.Unit
 
         public static ShareJson From(string path)
         {
-            string dir = Directory.GetCurrentDirectory();
             var text = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<ShareJson>(text);
         }

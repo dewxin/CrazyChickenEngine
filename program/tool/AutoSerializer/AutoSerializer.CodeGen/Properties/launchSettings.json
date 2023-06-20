@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AutoSerializer.CodeGen": {
+      "commandName": "Project",
+      "commandLineArgs": "-a D:\\Code\\_Work_\\Demo\\GameServer\\NagiServer\\program\\Busineness\\Share.IService\\bin\\Debug\\net462\\Share.IService.dll -c D:\\Code\\_Work_\\Demo\\GameServer\\NagiServer\\program\\Busineness\\Share.Serializer -n Share.Serializer"
+    }
+  }
+}

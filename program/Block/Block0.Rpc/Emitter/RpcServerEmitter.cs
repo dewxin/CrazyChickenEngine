@@ -1,5 +1,7 @@
-﻿using Block.RPC;
+﻿using Block.Rpc;
+using Block.RPC;
 using Block.RPC.Attr;
+using Block.RPC.Task;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -157,8 +159,8 @@ namespace Block.RPC.Emitter
             // Object PlayerXXX(Object arg0) 
             if (hasRet && hasParam)
             {
-                Type[] dynamicArgs = { typeof(object), typeof(object) };
-                DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(object), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
+                Type[] dynamicArgs = { typeof(MessageServiceHandler), typeof(object) };
+                DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(MethodCallTask), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
 
                 ILGenerator il = dynamicMethod.GetILGenerator(64);
                 il.Emit(OpCodes.Ldarg_0);
@@ -167,11 +169,12 @@ namespace Block.RPC.Emitter
                 il.Emit(OpCodes.Ret);
 
 
-                Func<object, object, object> methodFunc =
-                (Func<object, object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object, object>));
+                Func<MessageServiceHandler, object, MethodCallTask> methodFunc =
+                (Func<MessageServiceHandler, object, MethodCallTask>)dynamicMethod.CreateDelegate(typeof(Func<MessageServiceHandler, object, MethodCallTask>));
+
 
                 var paramType = method.GetParameters().Single().ParameterType;
-                var retType = method.ReturnType;
+                var retType = method.ReturnType.GetGenericArguments().Single();
 
                 if (paramType.IsValueType || retType.IsValueType)
                     throw new ArgumentException("param cannot be value type");
@@ -187,18 +190,18 @@ namespace Block.RPC.Emitter
             //object PlayerXXX()
             else if (hasRet && !hasParam)
             {
-                Type[] dynamicArgs = { typeof(object) };
-                DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(object), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
+                Type[] dynamicArgs = { typeof(MessageServiceHandler) };
+                DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(MethodCallTask), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
 
                 ILGenerator il = dynamicMethod.GetILGenerator(64);
                 il.Emit(OpCodes.Ldarg_0);
                 il.EmitCall(OpCodes.Call, method, null);
                 il.Emit(OpCodes.Ret);
 
-                Func<object, object> methodFunc =
-                (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+                Func<MessageServiceHandler, MethodCallTask> methodFunc =
+                (Func<MessageServiceHandler, MethodCallTask>)dynamicMethod.CreateDelegate(typeof(Func<MessageServiceHandler, MethodCallTask>));
 
-                var retType = method.ReturnType;
+                var retType = method.ReturnType.GetGenericArguments().Single();
 
                 if (retType.IsValueType)
                     throw new ArgumentException("param cannot be value type");
@@ -213,7 +216,7 @@ namespace Block.RPC.Emitter
             //void PlayerXXX(object)
             else if (!hasRet && hasParam)
             {
-                Type[] dynamicArgs = { typeof(object), typeof(object) };
+                Type[] dynamicArgs = { typeof(MessageServiceHandler), typeof(object) };
                 DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(void), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
 
                 ILGenerator il = dynamicMethod.GetILGenerator(64);
@@ -222,8 +225,8 @@ namespace Block.RPC.Emitter
                 il.EmitCall(OpCodes.Call, method, null);
                 il.Emit(OpCodes.Ret);
 
-                Action<object, object> methodFunc =
-                (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+                Action<MessageServiceHandler, object> methodFunc =
+                (Action<MessageServiceHandler, object>)dynamicMethod.CreateDelegate(typeof(Action<MessageServiceHandler, object>));
 
                 var paramType = method.GetParameters().Single().ParameterType;
 
@@ -240,7 +243,7 @@ namespace Block.RPC.Emitter
             //void PlayerXXX()
             else if (!hasRet && !hasParam)
             {
-                Type[] dynamicArgs = { typeof(object) };
+                Type[] dynamicArgs = { typeof(MessageServiceHandler) };
                 DynamicMethod dynamicMethod = new DynamicMethod("Nagi_Rpc_" + method.Name, typeof(void), dynamicArgs, typeof(RpcServerCodeEmitter).Module);
 
                 ILGenerator il = dynamicMethod.GetILGenerator(64);
@@ -248,8 +251,8 @@ namespace Block.RPC.Emitter
                 il.EmitCall(OpCodes.Call, method, null);
                 il.Emit(OpCodes.Ret);
 
-                Action<object> methodFunc =
-                (Action<object>)dynamicMethod.CreateDelegate(typeof(Action<object>));
+                Action<MessageServiceHandler> methodFunc =
+                (Action<MessageServiceHandler>)dynamicMethod.CreateDelegate(typeof(Action<MessageServiceHandler>));
 
 
                 return new ProcedureInfo()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using Block0.Net.Serialize;
 
 namespace Block0.Net
 {
@@ -60,13 +61,13 @@ namespace Block0.Net
         public void SetParam(object param)
         {
             if(param != null)
-                MethodParamBytes = SerializerHelper.Serialize(param);
+                MethodParamBytes = SerializerStub.Serialize(param);
         }
 
         private byte[] HeaderToFlatBytes()
         {
             var memoryStream = new MemoryStream(10);
-            OrderSafeWriter writer = new OrderSafeWriter(memoryStream);
+            BinaryWriter writer = new BinaryWriter(memoryStream);
 
             writer.Write(headerFlag);
             writer.Write(SourceServiceId);
@@ -83,7 +84,7 @@ namespace Block0.Net
         public void FlatBytesToMessage(ArraySegment<byte> buffer)
         {
             var memoryStream = new MemoryStream(buffer.Array, buffer.Offset, buffer.Count);
-            OrderSafeReader reader = new OrderSafeReader(memoryStream);
+            BinaryReader reader = new BinaryReader(memoryStream);
 
             headerFlag = reader.ReadByte();
             SourceServiceId= reader.ReadByte();

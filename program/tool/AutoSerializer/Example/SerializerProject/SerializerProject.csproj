@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoSerializer.Base\AutoSerializer.Base.csproj" />
+    <ProjectReference Include="..\ParamProject\ParamProject.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -8,6 +8,9 @@ using Block.Assorted.Logging;
 using System.Collections.Generic;
 using Block1.ThreadLog;
 using Engine.IService;
+using Block0.Net.Serialize;
+using AutoSerializer;
+using Engine.Serializer;
 
 namespace Engine.Common.Unit
 {
@@ -19,14 +22,15 @@ namespace Engine.Common.Unit
 
         public bool IsGlobalEureka { get; set; }
 
-        public void Init(AllConfig allConfig)
+        public virtual void Init(AllConfig allConfig)
         {
             GlobalConfig = allConfig.GlobalConfig;
             SocketConfig = allConfig.SocketConfig;
             GlobalConfig.Inst = GlobalConfig;
             SocketConfig.Inst = SocketConfig;
 
-
+            SerializerCenter.Init();
+            SerializerStub.Init(new DelegateSeriazlier());
             LogExtension.Instance.EnableAsync();
             ServiceFinder.Init();
 

@@ -21,7 +21,7 @@ namespace Engine.IService
         Full = 4,
     }
 
-    public enum ServiceTypeEnum
+    public enum ServiceTypeEnum: byte
     {
         None = 0,
         NodeEureka,
@@ -69,6 +69,7 @@ namespace Engine.IService
         public ushort NodeId { get; set; }
         public List<NodeInfo> NodeInfoList { get; set; } = new List<NodeInfo>();
     }
+
 
 
 }

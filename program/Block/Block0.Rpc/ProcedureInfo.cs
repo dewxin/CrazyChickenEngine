@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Block.Rpc;
+using Block.RPC.Task;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +16,7 @@ namespace Block.RPC
         public bool HasRet { get; set; }
         public bool HasParam { get; set; }
 
-        public object Invoke(object handler, object param)
+        public MethodCallTask Invoke(MessageServiceHandler handler, object param)
         {
             if (HasParam && HasRet)
             {
@@ -36,8 +38,8 @@ namespace Block.RPC
             return null;
         }
 
-        private Func<object, object, object> _FuncParamObjRetObj;
-        public Func<object, object, object> FuncParamObjRetObj
+        private Func<MessageServiceHandler, object, MethodCallTask> _FuncParamObjRetObj;
+        public Func<MessageServiceHandler, object, MethodCallTask> FuncParamObjRetObj
         {
             get => _FuncParamObjRetObj;
             set
@@ -49,8 +51,8 @@ namespace Block.RPC
         }
 
 
-        private Func<object, object> _FuncParamVoidRetObj;
-        public Func<object, object> FuncParamVoidRetObj
+        private Func<MessageServiceHandler, MethodCallTask> _FuncParamVoidRetObj;
+        public Func<MessageServiceHandler, MethodCallTask> FuncParamVoidRetObj
         {
             get => _FuncParamVoidRetObj;
             set
@@ -61,8 +63,8 @@ namespace Block.RPC
             }
         }
 
-        private Action<object, object> _FuncParamObjRetVoid;
-        public Action<object, object> FuncParamObjRetVoid
+        private Action<MessageServiceHandler, object> _FuncParamObjRetVoid;
+        public Action<MessageServiceHandler, object> FuncParamObjRetVoid
         {
             get => _FuncParamObjRetVoid;
             set
@@ -74,8 +76,8 @@ namespace Block.RPC
         }
 
 
-        private Action<object> _FuncParamVoidRetVoid;
-        public Action<object> FuncParamVoidRetVoid
+        private Action<MessageServiceHandler> _FuncParamVoidRetVoid;
+        public Action<MessageServiceHandler> FuncParamVoidRetVoid
         {
             get => _FuncParamVoidRetVoid;
             set

@@ -1,12 +1,15 @@
 ﻿global using Block.RPC.Emitter;
 using Block.Assorted.Logging;
+using Block0.MessagePack;
+using Block0.MessagePack.Compiled;
 using Block0.Threading;
 using GameServerBase.ServerWorld;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Protocol.Param;
 using System;
 using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,7 +23,7 @@ namespace UnitTest
     [TestClass]
     public class _TestForTmpUse
     {
-        class JsonObj
+        public class JsonObj
         {
             public string EurekaMasterNodeIp { get; set; }
             public int EurekaMasterNodePort { get; set; }
@@ -33,13 +36,8 @@ namespace UnitTest
         public void TestMethod1()
         {
 
-            JsonObj jsonObj = new JsonObj() { EurekaMasterNodeIp = "dd", EurekaMasterNodePort = 33 };
-
-            var result = JsonConvert.SerializeObject(jsonObj);
-
-            Console.WriteLine(result);
-
         }
+
 
     }
 }

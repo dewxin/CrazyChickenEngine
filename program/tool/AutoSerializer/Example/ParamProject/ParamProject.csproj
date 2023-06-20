@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+	<UsingTask TaskName="SerializerGenTask" AssemblyFile="..\..\AutoSerializer.CodeGen\bin\Debug\AutoSerializer.CodeGen.dll" />
+
+	<Target Name="GenerateCode" AfterTargets="Build">
+		<SerializerGenTask 
+			OutputPath="$(MSBuildProjectDirectory)\$(OutputPath)"
+			AssemblyFileName="$(MSBuildProjectName).dll" 
+			CodePath="..\SerializerProject\" 
+			NameSpace="ParamProject"
+		/>
+	</Target>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\AutoSerializer.Base\AutoSerializer.Base.csproj" />
+	</ItemGroup>
+
+
+</Project>
+

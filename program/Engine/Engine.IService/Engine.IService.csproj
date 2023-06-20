@@ -2,17 +2,26 @@
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net462;net6.0;</TargetFrameworks>
+		<TargetFrameworks>net462;net6.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Block\Block0.Rpc\Block0.Rpc.csproj" />
 	</ItemGroup>
 
-	<UsingTask TaskName="ModifyAssembly" AssemblyFile="..\..\tool\AssemblyTool\bin\Debug\net462\Tool.AssemblyMod.dll" />
+	<!--
+	<UsingTask TaskName="SerializerGenTask" AssemblyFile="..\..\tool\AutoSerializer\AutoSerializer.CodeGen\bin\Debug\AutoSerializer.CodeGen.dll" />
 
-	<Target Name="ModifyAsm" AfterTargets="Build">
-		<ModifyAssembly AssemblyFile="$(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll" />
+
+	<Target Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" Name="GenerateCode" AfterTargets="Build">
+		<SerializerGenTask OutputPath="" AssemblyFileName="" CodePath="..\Engine.Serializer\" NameSpace="Engine.Serializer" />
+	</Target>
+	-->
+
+	<Target Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'"
+			Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="..\..\tool\AutoSerializer\AutoSerializer.CodeGen\bin\Debug\AutoSerializer.CodeGen.exe -a $(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll -c ..\Engine.Serializer\ -n Engine.Serializer" />
 	</Target>
 
 </Project>
+

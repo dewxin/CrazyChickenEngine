@@ -2,7 +2,7 @@
 using Block0.Net;
 using GameServerBase.ServerWorld;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Protocol.Service.World;
+using Share.IService.Service.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;

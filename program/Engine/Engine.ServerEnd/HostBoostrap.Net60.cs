@@ -1,4 +1,5 @@
-﻿using Engine.Common.Unit;
+﻿using Block0.Net.Serialize;
+using Engine.Common.Unit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,10 @@ namespace Engine.ServerEnd
 
         public static void Start(Type getterType, IEnumerable<string> serviceFileNames)
         {
-
             var allConfig = ConfigHelper.GetAllConfigFromFiles(getterType, serviceFileNames);
             serverNode = allConfig.ServerNode;
             serverNode.Init(allConfig);
+
             serverNode.Run();
 
             //TODO Command can be delivered to ServerThread by Console

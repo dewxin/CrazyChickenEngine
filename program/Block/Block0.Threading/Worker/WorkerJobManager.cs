@@ -31,9 +31,7 @@ namespace Block0.Threading.Worker
         public static void AddJob(WorkerJob workerJob)
         {
             if (workerJob is IUniqueJobID workerID)
-            {
                 workerJob.JobID = workerID.UniqueID;
-            }
 
             checked
             {
