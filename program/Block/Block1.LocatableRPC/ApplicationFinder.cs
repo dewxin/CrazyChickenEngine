@@ -12,32 +12,33 @@ using System.Net.Sockets;
 
 namespace Block1.LocatableRPC
 {
-    public class ServiceRpcFinder
+    //TODO 需要缓存
+    public class ApplicationServiceFinder
     {
         public bool IsLocalNode { get; set; }
         public IPEndPoint RemoteEndPoint { get; set; }
-        public byte DestServiceId { get; set; }
+        public byte DestAppId { get; set; }
         public MethodCallTaskCenter CallTaskCenter {get;set;}
 
         // Get Service inteface
         // 获取 服务提供的接口 (函数)
-        public IRpc GetRpc<IRpc>() where IRpc : class
+        public IService GetService<IService>() where IService : class
         {
-            if (DestServiceId == 0)
-                throw new ArgumentNullException($"{nameof(DestServiceId)} cannot be 0");
-            //TODO 这里Emitter每次都要创建类开销比较大，但先这样
+            if (DestAppId == 0)
+                throw new ArgumentNullException($"{nameof(DestAppId)} cannot be 0");
+            //TODO 这里Emitter每次都要创建类开销比较大，需要缓存
 
             if (IsLocalNode)
             {
-                var rpcInvoker = new LocalRpcInvoker(DestServiceId, CallTaskCenter);
-                var serviceProxy = RpcClientEmitter.Resolve<IRpc>(rpcInvoker);
+                var rpcInvoker = new LocalRpcInvoker(DestAppId, CallTaskCenter);
+                var serviceProxy = RpcClientEmitter.Resolve<IService>(rpcInvoker);
                 return serviceProxy;
             }
             else
             {
-                var rpcInvoker = new NetworkRpcInvoker(DestServiceId, CallTaskCenter);
+                var rpcInvoker = new NetworkRpcInvoker(DestAppId, CallTaskCenter);
                 rpcInvoker.RemoteIPEndPoint = RemoteEndPoint;
-                var serviceProxy = RpcClientEmitter.Resolve<IRpc>(rpcInvoker);
+                var serviceProxy = RpcClientEmitter.Resolve<IService>(rpcInvoker);
                 return serviceProxy;
             }
 
@@ -47,38 +48,39 @@ namespace Block1.LocatableRPC
 
 
 
-    public class ServiceFinder
+    public class ApplicationFinder
     {
         private MethodCallTaskCenter methodCallTaskCenter;
 
         public static void Init()
         {
-            WorkerJobManager.AddJob(new NetworkJob());
+            WorkerJobManager.AddJob(new OutputNetworkJob());
+            WorkerJobManager.AddJob(new InputNetworkJob());
         }
 
-        public ServiceFinder(MethodCallTaskCenter methodCallTaskCenter)
+        public ApplicationFinder(MethodCallTaskCenter methodCallTaskCenter)
         {
             this.methodCallTaskCenter = methodCallTaskCenter;
         }
 
 
-        public ServiceRpcFinder ByLocal(byte destServiceId)
+        public ApplicationServiceFinder ByLocal(byte destAppId)
         {
-            var procedureCall = new ServiceRpcFinder
+            var procedureCall = new ApplicationServiceFinder
             {
                 IsLocalNode = true,
-                DestServiceId = destServiceId,
+                DestAppId = destAppId,
                 CallTaskCenter = methodCallTaskCenter,
             };
             return procedureCall;
         }
 
-        public ServiceRpcFinder ByEndPoint(IPEndPoint ipEndPoint, byte destServiceId)
+        public ApplicationServiceFinder ByEndPoint(IPEndPoint ipEndPoint, byte destAppId)
         {
-            var procedureCall = new ServiceRpcFinder
+            var procedureCall = new ApplicationServiceFinder
             {
                 RemoteEndPoint = ipEndPoint,
-                DestServiceId = destServiceId,
+                DestAppId = destAppId,
                 CallTaskCenter = methodCallTaskCenter,
             };
             return procedureCall;

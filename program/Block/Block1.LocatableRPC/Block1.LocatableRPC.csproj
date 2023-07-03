@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFrameworks>net462;net6.0;</TargetFrameworks>
+		<TargetFrameworks>net471;net6.0;</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Block0.Assorted\Block0.Assorted.csproj" />
+	  <ProjectReference Include="..\Block0.Assorted\Block.Assorted.csproj" />
 	  <ProjectReference Include="..\Block0.Rpc\Block0.Rpc.csproj" />
 	  <ProjectReference Include="..\Block0.Threading\Block0.Threading.csproj" />
 	  <ProjectReference Include="..\Block0.Net\Block0.Net.csproj" />

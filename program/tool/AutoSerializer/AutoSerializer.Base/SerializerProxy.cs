@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AutoSerializer
 {
@@ -8,6 +9,19 @@ namespace AutoSerializer
     {
 
         private static Dictionary<Type, ISerializer> type2SerializerDict = new Dictionary<Type, ISerializer>();
+
+        static SerializerProxy()
+        {
+            SerializerProxy.AddSerializer(typeof(ByteC), new ByteCSerializer());
+            SerializerProxy.AddSerializer(typeof(Int16C), new Int16CSerializer());
+            SerializerProxy.AddSerializer(typeof(Int32C), new Int32CSerializer());
+            SerializerProxy.AddSerializer(typeof(Int64C), new Int64CSerializer());
+            SerializerProxy.AddSerializer(typeof(string), new StringSerializer());
+            SerializerProxy.AddSerializer(typeof(FloatC), new FloatCSerializer());
+            SerializerProxy.AddSerializer(typeof(DoubleC), new DoubleCSerializer());
+
+        }
+
 
         public static void AddSerializer(Type type, ISerializer serializer)
         {
@@ -20,7 +34,7 @@ namespace AutoSerializer
                 return serializer;
             }
 
-            throw new NotSupportedException("cannot find type serialzier");
+            throw new NotSupportedException($"cannot find serialzier for type {type.Name}");
         }
 
         public static byte[] Serialize(Type type, object obj)
@@ -33,7 +47,7 @@ namespace AutoSerializer
                 return stream.ToArray();
             }
 
-            throw new NotSupportedException("cannot find type serialzier");
+            throw new NotSupportedException($"cannot find serialzier for type {type.Name}");
         }
 
 
@@ -46,9 +60,8 @@ namespace AutoSerializer
                 return serializer.Deserialize(binaryReader);
             }
 
-            throw new NotSupportedException("cannot find type serialzier");
+            throw new NotSupportedException($"cannot find serialzier for type {type.Name}");
         }
-
 
     }
 }

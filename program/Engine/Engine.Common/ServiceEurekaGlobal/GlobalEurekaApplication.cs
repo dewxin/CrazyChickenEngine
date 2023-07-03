@@ -6,23 +6,23 @@ using Engine.IService;
 
 namespace Engine.Common.ServiceEurekaGlobal
 {
-    public partial class GlobalEurekaService:IUniqueJobID
+    public partial class GlobalEurekaApplication:IUniqueJobID
     {
-        public byte UniqueID => (byte)ServiceJobID.EurekaMasterID;
+        public byte UniqueID => (byte)AppJobID.EurekaMasterID;
     }
 
-    public partial class GlobalEurekaService : GameService
+    public partial class GlobalEurekaApplication : GameApplication
     {
         public EurekaNodeManager NodeInfoManager { get; set; } = new EurekaNodeManager();
 
-        public GlobalEurekaService()
+        public GlobalEurekaApplication()
         {
-            ServiceType = ServiceTypeEnum.GlobalEureka;
+            ApplicationType = ApplicationTypeEnum.GlobalEureka;
         }
 
         protected override void OnInitAddOn()
         {
-            AddHandler(new GlobalEurekaHandler());
+            AddServiceHandler(new GlobalEurekaHandler());
         }
 
 

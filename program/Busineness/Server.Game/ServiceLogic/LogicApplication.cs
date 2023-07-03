@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 
 namespace Server.Game.ServiceLogic
 {
-    public class LogicService : GameService
+    public class LogicApplication : GameApplication
     {
         private ushort worldServiceNodeId;
         private byte worldServiceId;
 
-        public LogicService()
+        public LogicApplication()
         {
-            ServiceType = ServiceTypeEnum.Logic;
+            ApplicationType = ApplicationTypeEnum.Logic;
         }
 
         protected override void OnInitAddOn()
         {
-            AddHandler(new Client2LogicHandler());
+            AddServiceHandler(new Client2LogicHandler());
             OnNodeAdded += LogicServiceActor_OnHostAdded;
         }
 
         private void LogicServiceActor_OnHostAdded(NodeInfo hostInfo)
         {
-            foreach(var serviceInfo in hostInfo.ServiceInfoList)
+            foreach(var serviceInfo in hostInfo.ApplicationInfoList)
             {
-                if (serviceInfo.ServiceType == ServiceTypeEnum.World)
+                if (serviceInfo.ApplicationType == ApplicationTypeEnum.World)
                 {
-                    worldServiceId = serviceInfo.ServiceID;
+                    worldServiceId = serviceInfo.AppID;
                     worldServiceNodeId = hostInfo.NodeId;
-                    FindService.ByNodeId(worldServiceNodeId, worldServiceId).
-                        GetRpc<ILogic2World>().Hello($"from node{MyNodeId} logic");
+                    FindApp.ByNodeId(worldServiceNodeId, worldServiceId).
+                        GetService<ILogic2World>().Hello($"from node{MyNodeId} logic");
                 }
             }
 

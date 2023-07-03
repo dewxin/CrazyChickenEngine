@@ -18,17 +18,17 @@ namespace Engine.Common.Unit
 
         public void NotifyNodeInfo(NodeInfo hostInfo)
         {
-            Log.Debug($"{GameService.GetType().Name}");
-            GameService.AddNodeInfo(hostInfo);
+            Log.Debug($"{Application.GetType().Name}");
+            Application.AddNodeInfo(hostInfo);
         }
 
         public void NotifyNodePubRet(NodePubRet nodePubRet)
         {
-            Log.Debug($"{GameService.GetType().Name}");
-            GameService.MyNodeId = nodePubRet.NodeId;
+            Log.Debug($"{Application.GetType().Name}");
+            Application.MyNodeId = nodePubRet.NodeId;
             foreach (var nodeInfo in nodePubRet.NodeInfoList)
             {
-                GameService.AddNodeInfo(nodeInfo);
+                Application.AddNodeInfo(nodeInfo);
             }
         }
     }

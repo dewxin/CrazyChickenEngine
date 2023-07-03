@@ -20,6 +20,8 @@ namespace Block0.Net
                 port = UdpSocketHelper.GetUnusedPort(config.PortRangeMin, config.PortRangeMax);
             else
                 port = UdpSocketHelper.GetUnusedPort(2000, 65500);
+
+            config.Port = port;
             return port;
         }
 
@@ -64,6 +66,28 @@ namespace Block0.Net
             socket.NoDelay = true;
             //socket.Blocking = false; data may loss
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+        }
+
+
+        public static bool TryGetLocalEndPoint(out IPEndPoint ipEndPoint)
+        {
+            try
+            {
+                string localIP = string.Empty;
+                using (Socket socket = new Socket(AddressFamily.InterNetwork,
+                    SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect("www.baidu.com", 80);
+                    ipEndPoint = socket.LocalEndPoint as IPEndPoint;
+                    return true;
+                }
+            }
+            catch (SocketException ex)
+            {
+                ipEndPoint = null;
+                return false;
+            }
+
         }
 
 

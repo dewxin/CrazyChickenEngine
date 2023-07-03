@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
 	<UsingTask TaskName="SerializerGenTask" AssemblyFile="..\..\AutoSerializer.CodeGen\bin\Debug\AutoSerializer.CodeGen.dll" />

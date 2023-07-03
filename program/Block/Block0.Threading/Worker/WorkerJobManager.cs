@@ -18,6 +18,8 @@ namespace Block0.Threading.Worker
 
         internal static Dictionary<ushort, WorkerJob> id2UnManagedJobDict = new Dictionary<ushort, WorkerJob>();
 
+        public static int ManagedJobCount => id2ManagedJobDict.Count;
+
         public static WorkerJob GetJob(ushort id)
         {
             if(id2ManagedJobDict.TryGetValue(id, out var managedJob))

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Engine.ServerEnd;
 using Server.Game._ServerGetter;
+using Block.Assorted.Logging;
 
 namespace Server.Game
 {
@@ -34,6 +35,8 @@ namespace Server.Game
 				String.Join("\n", errs)));
 
 
+			//LogExtension.Instance.SetLevel(LogLevel.Info);
+			Share.Serializer.SerializerCenter.Init();
 			HostBoostrap.Start(typeof(GlobalInfoGetter),result.Value.StartFiles);
 		}
     }

@@ -8,8 +8,8 @@ namespace Block0.Threading.Pipe
 {
     public class JobMsg
     {
-        internal protected byte SourceJobId { get; set; }
-        internal protected byte DestJobId { get; set;}
+        public byte SourceJobId { get; set; }
+        public byte DestJobId { get; set;}
         public object MethodParam { get; set; }
 
 

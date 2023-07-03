@@ -5,6 +5,7 @@ using Block.RPC.Task;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,8 @@ namespace Block.Rpc
 
         protected Dictionary<ushort, ProcedureInfo> id2MethodMetaDict = new Dictionary<ushort, ProcedureInfo>();
 
+        //当前消息的发送者
+        public IPEndPoint RemoteEndPoint { get; set; }
 
         public bool CanHandleMethod(ushort methodId)
         {

@@ -12,7 +12,9 @@ namespace Block0.Net
     {
         public static SocketConfig Inst = new SocketConfig();
 
-        public string IP { get; set; } = "127.0.0.1";
+        //会在初始化的时候尝试赋值
+        /// <see cref="UdpSocketManager.Init(Action{NetMessage, System.Net.IPEndPoint})"/>
+        public string IP { get; set; } = "127.0.0.1"; 
 
         public ProtocolType ProtocolType { get; set; } //TCP or UDP
         public int Port { get; set; }

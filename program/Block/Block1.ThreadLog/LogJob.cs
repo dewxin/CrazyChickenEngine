@@ -1,5 +1,4 @@
-﻿using Block.Assorted.Logging.ILogImpl;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +8,22 @@ using Block0.Threading.Worker;
 
 namespace Block1.ThreadLog
 {
+    /// <summary>
+    /// 先获得原有的log implementation，再用这里LogJob在新线程上代理原有的日志调用。
+    /// </summary>
     public class LogJob : WorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.Log;
 
         private ILog log;
 
-        public override void Init()
+        public override void Awake()
         {
-            log = new Log4NetImpl();
+            log = Log.LogImpl;
+            if(log == null)
+            {
+                throw new ArgumentNullException("need to Set Log Implementation first, Log.Init()");
+            }
 
             global::Block.Assorted.Logging.Log.Init(new ThreadLogImpl());
         }

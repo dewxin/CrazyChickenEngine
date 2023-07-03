@@ -6,6 +6,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Block.Assorted.Logging;
+using System.Runtime.CompilerServices;
 
 namespace Block0.Net
 {
@@ -20,47 +22,53 @@ namespace Block0.Net
 
     public partial class UdpSocketManager
     {
-        private static Action<NetMessage, IPEndPoint> OnReceiveMessage;
-
         public static int ListenPort { get; private set; }
-
         public static UdpClient UdpClient { get; private set; }
+        public static bool NeedHandle => UdpClient.Client.Available>0;
 
-        public static void Init(Action<NetMessage,IPEndPoint> onReceiveMessageAction)
+        private static IPEndPoint point = new IPEndPoint(IPAddress.Any, 0);
+
+        public static void Init()
         {
-            OnReceiveMessage= onReceiveMessageAction;
-            ListenPort = UdpSocketHelper.GetPortByConfig(SocketConfig.Inst);
-
-            Thread thread = new Thread(StartListener);
-
-            thread.Start();
-        }
-
-        private static void StartListener()
-        {
+            InitSocktConfig();
+            Log.Info($"Ip:{SocketConfig.Inst.IP} Port: {SocketConfig.Inst.Port}");
 
             UdpClient = new UdpClient(ListenPort);
-            //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, ListenPort);
-            IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any,0);
+            UdpClient.Client.Blocking = false;
+        }
 
-            //try
+        private static void InitSocktConfig()
+        {
+            ListenPort = UdpSocketHelper.GetPortByConfig(SocketConfig.Inst);
+            if (UdpSocketHelper.TryGetLocalEndPoint(out var ipEndPoint))
             {
-                while (true)
-                {
-                    byte[] bytes = UdpClient.Receive(ref remoteEndPoint);
-
-                    NetMessage netMessage = NetMessage.Parse(new ArraySegment<byte>(bytes));
-                    OnReceiveMessage?.Invoke(netMessage, remoteEndPoint);
-                }
+                SocketConfig.Inst.IP = ipEndPoint.Address.ToString();
             }
-            //catch (SocketException e)
-            //{
-            //    Console.WriteLine(e);
-            //}
-            //finally
-            //{
-            //    UdpClient.Close();
-            //}
+        }
+
+        public static bool TryGetMessage(out NetMessage netMessage, out IPEndPoint remoteEndPoint)
+        {
+            netMessage = null;
+            remoteEndPoint = point;
+
+            try
+            {
+                if (UdpClient.Client.Available == 0)
+                    return false;
+
+                byte[] bytes = UdpClient.Receive(ref remoteEndPoint);
+                Log.Debug($"Received Data lenth:{bytes.Length}");
+
+                //TODO 如果同时到两个数据包 会出bug
+                netMessage = NetMessage.Parse(new ArraySegment<byte>(bytes));
+                return true;
+            }
+            catch (SocketException e)
+            {
+                Log.Error(e.ToString());
+                throw e;
+            }
+
         }
     }
 }

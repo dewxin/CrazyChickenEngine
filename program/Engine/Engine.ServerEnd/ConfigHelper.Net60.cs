@@ -41,7 +41,7 @@ namespace Engine.ServerEnd
                 GlobalConfig = commonInfoGetter.GetGlobalConfig(),
                 ServerNode = serverInfoGetter.GetServer(),
                 SocketConfig = serverInfoGetter.GetSocketConfig(),
-                ServiceList = serverInfoGetter.GetServiveList(),
+                ApplicationList = serverInfoGetter.GetApplicationList(),
             };
         }
 
@@ -65,7 +65,7 @@ namespace Engine.ServerEnd
                 GlobalConfig = commonInfoGetter.GetGlobalConfig(),
                 ServerNode = serverInfoGetter.GetServer(),
                 SocketConfig = serverInfoGetter.GetSocketConfig(),
-                ServiceList = serverInfoGetter.GetServiveList(),
+                ApplicationList = serverInfoGetter.GetApplicationList(),
             };
 
         }

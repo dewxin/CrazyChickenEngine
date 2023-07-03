@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace GameServerBase.ServerWorld
 {
-    public class WorldService : GameService
+    public class WorldApplication : GameApplication
     {
         internal PlayerInfoManager PlayerInfoManager { get; set; } = new PlayerInfoManager();
         internal MatchManager MatchManager { get; set; } = new MatchManager();
 
-        public WorldService()
+        public WorldApplication()
         {
-            ServiceType = ServiceTypeEnum.World;
+            ApplicationType = ApplicationTypeEnum.World;
 
             OnAfterMessage += MatchManager.CheckTaskState;
         }
 
         protected override void OnInitAddOn()
         {
-            AddHandler(new Client2WorldHandler(), new Logic2WorldHandler(), new Login2WorldHandler());
+            AddServiceHandler(new Client2WorldHandler(), new Logic2WorldHandler(), new Login2WorldHandler());
         }
 
     }

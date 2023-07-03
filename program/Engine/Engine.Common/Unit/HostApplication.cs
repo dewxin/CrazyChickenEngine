@@ -10,32 +10,32 @@ using System.Threading.Tasks;
 
 namespace Engine.Common.Unit
 {
-    public enum ServiceJobID : byte
+    public enum AppJobID : byte
     {
         None = WorkerJobID.UserNamed,
         EurekaMasterID,
 
     }
 
-    public abstract class HostService : LPCServiceJob
+    public abstract class HostApplication : LpcAppJob
     {
 
         public Action OnAfterMessage = delegate { };
         public Random GRandom { get; private set; }
-        public ServiceFinder ServiceFinder { get; private set; }
+        public ApplicationFinder ApplicationFinder { get; private set; }
 
         public virtual HostNode HostNode { get; set; }
 
-        public HostService()
+        public HostApplication()
         {
             GRandom = new Random((int)DateTime.Now.Ticks);
-            ServiceFinder = new ServiceFinder(MethodCallTaskCenter);
+            ApplicationFinder = new ApplicationFinder(MethodCallTaskCenter);
         }
 
 
-        public override void Init()
+        public override void Awake()
         {
-            base.Init();
+            base.Awake();
 
             OnInit();
         }

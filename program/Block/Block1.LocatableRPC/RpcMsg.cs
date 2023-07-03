@@ -14,8 +14,8 @@ namespace Block1.LocatableRPC
         public ushort MethodId { get; set; }
         public ushort MethodCallTaskId { get; set; }
 
-        public byte SourceServiceId { get => SourceJobId; set => SourceJobId = value; }
-        public byte DestServiceId { get => DestJobId; set => DestJobId = value; }
+        public byte SourceAppId { get => SourceJobId; set => SourceJobId = value; }
+        public byte DestAppId { get => DestJobId; set => DestJobId = value; }
         public bool IsMethodCallDoneReply { get; set; } = false;
     }
 
@@ -30,6 +30,6 @@ namespace Block1.LocatableRPC
         public IPEndPoint RemoteIPEndPoint { get; set; }
 
         //用于NetworkJob转发
-        public byte RealDestServiceId { get; set; } 
+        public byte RealDestAppId { get; set; } 
     }
 }

@@ -24,10 +24,10 @@ namespace Block0.Net
         /// <see cref="HeaderBit"/>
         private byte headerFlag = 0;
         public bool IsReply { get; set; }
-        public byte SourceServiceId { get; private set; }
-        public byte DestServiceId { get; private set; }
-        public ushort MethodCallTaskID { get; private set; } = 0;
-        public ushort MethodID { get; private set; } = 0;
+        public byte SourceAppId { get;  set; }
+        public byte DestAppId { get;  set; }
+        public ushort MethodCallTaskID { get;  set; } = 0;
+        public ushort MethodID { get;  set; } = 0;
         public ArraySegment<byte> MethodParamBytes { get; set; }
 
         public IPEndPoint ipEndPoint { get; set; }
@@ -35,21 +35,26 @@ namespace Block0.Net
 
         public NetMessage() { }
 
-        public NetMessage(byte sourceServiceId, byte destServiceId, ushort methodID = 0, ushort methodCallTaskID = 0, bool isReply = false)
+        public NetMessage(byte sourceAppId, byte destAppId, ushort methodId = 0, ushort methodCallTaskId = 0, bool isReply = false)
         {
-            SourceServiceId = sourceServiceId;
-            DestServiceId = destServiceId;
-            MethodID = methodID;
-            MethodCallTaskID = methodCallTaskID;
+            SourceAppId = sourceAppId;
+            DestAppId = destAppId;
+            MethodID = methodId;
+            MethodCallTaskID = methodCallTaskId;
             IsReply = isReply;
+            InitHeader();
+        }
 
-            if (isReply)
+        public void InitHeader()
+        {
+            if (IsReply)
                 HeaderTool.Or(ref headerFlag, HeaderBit.IsReply);
-            if (methodCallTaskID > 0)
+            if (MethodCallTaskID > 0)
                 HeaderTool.Or(ref headerFlag, HeaderBit.HasTaskID);
-            if (methodID > 0)
+            if (MethodID > 0)
                 HeaderTool.Or(ref headerFlag, HeaderBit.HasMethodID);
         }
+
 
         public static NetMessage Parse(ArraySegment<byte> buffer)
         {
@@ -70,8 +75,8 @@ namespace Block0.Net
             BinaryWriter writer = new BinaryWriter(memoryStream);
 
             writer.Write(headerFlag);
-            writer.Write(SourceServiceId);
-            writer.Write(DestServiceId);
+            writer.Write(SourceAppId);
+            writer.Write(DestAppId);
             if(MethodCallTaskID>0)
                 writer.Write(MethodCallTaskID);
             if(MethodID>0)
@@ -87,8 +92,8 @@ namespace Block0.Net
             BinaryReader reader = new BinaryReader(memoryStream);
 
             headerFlag = reader.ReadByte();
-            SourceServiceId= reader.ReadByte();
-            DestServiceId = reader.ReadByte();
+            SourceAppId= reader.ReadByte();
+            DestAppId = reader.ReadByte();
             if (HeaderTool.BitSetted(ref headerFlag, HeaderBit.HasTaskID))
                 MethodCallTaskID = reader.ReadUInt16();
             if(HeaderTool.BitSetted(ref headerFlag, HeaderBit.HasMethodID))

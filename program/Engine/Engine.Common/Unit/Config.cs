@@ -16,7 +16,7 @@ namespace Engine.Common.Unit
     {
         HostNode GetServer();
         SocketConfig GetSocketConfig();
-        List<HostService> GetServiveList();
+        List<HostApplication> GetApplicationList();
     }
 
     public sealed class GlobalConfig
@@ -35,6 +35,6 @@ namespace Engine.Common.Unit
         public GlobalConfig GlobalConfig { get; set; } = new GlobalConfig();
         public SocketConfig SocketConfig { get; set; } = new SocketConfig();
         public HostNode ServerNode { get; set; }
-        public List<HostService> ServiceList { get; set; }
+        public List<HostApplication> ApplicationList { get; set; }
     }
 }

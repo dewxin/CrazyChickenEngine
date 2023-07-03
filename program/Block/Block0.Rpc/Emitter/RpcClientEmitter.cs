@@ -59,10 +59,10 @@ namespace Block.RPC.Emitter
         {
             var assemblyName = new AssemblyName(nameof(RpcClientEmitter));
             dllName = assemblyName.Name + ".dll";
-#if NET462
-            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
-#elif NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
             assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#else
+            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
 #endif
             moduleBuilder = assemblyBuilder.DefineDynamicModule(dllName);
         }

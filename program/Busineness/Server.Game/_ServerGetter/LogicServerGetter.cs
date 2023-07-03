@@ -24,18 +24,17 @@ namespace Server.Game._ServerGetter
         {
             return new SocketConfig()
             {
-                IP = "127.0.0.1",
                 Port = 24444,
             };
         }
 
 
-        public List<HostService> GetServiveList()
+        public List<HostApplication> GetApplicationList()
         {
-            return new List<HostService>()
+            return new List<HostApplication>()
             {
-                new NodeEurekaService(),
-                new LogicService(),
+                new NodeEurekaApplication(),
+                new LogicApplication(),
             };
         }
     }

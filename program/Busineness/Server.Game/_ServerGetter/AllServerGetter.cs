@@ -20,7 +20,7 @@ namespace Server.Game._ServerGetter
 
         public HostNode GetServer()
         {
-            var hasGlobalEurekaService = GetServiveList().Any(service => service is GlobalEurekaService);
+            var hasGlobalEurekaService = GetApplicationList().Any(service => service is GlobalEurekaApplication);
             return new HostNode()
             {
                 IsGlobalEureka = hasGlobalEurekaService,
@@ -37,15 +37,15 @@ namespace Server.Game._ServerGetter
         }
 
 
-        public List<HostService> GetServiveList()
+        public List<HostApplication> GetApplicationList()
         {
-            return new List<HostService>()
+            return new List<HostApplication>()
             {
-                new GlobalEurekaService(),
-                new NodeEurekaService(),
-                new LoginService(),
-                new LogicService(),
-                new WorldService(),
+                new GlobalEurekaApplication(),
+                new NodeEurekaApplication(),
+                new LoginApplication(),
+                new LogicApplication(),
+                new WorldApplication(),
             };
         }
     }

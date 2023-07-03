@@ -15,7 +15,8 @@ namespace Block0.Threading.Worker
 
         Named = 50,
         Log,
-        Network,
+        OutputNetwork,
+        InputNetwork,
         UserNamed = 100,
     }
 
@@ -31,12 +32,18 @@ namespace Block0.Threading.Worker
         
         public JobMsg CurrentMsg { get; private set; }
 
-        public bool NeedsHandleMsg => ReceivingPipe.Count > 0 && CurrentWorker == null;
+        public virtual bool NeedsHandleMsg => ReceivingPipe.Count > 0 && CurrentWorker == null;
         internal Many4OnePipe<JobMsg> ReceivingPipe { get; private set; } = new Many4OnePipe<JobMsg>();
         public volatile Worker CurrentWorker;
-        public virtual void Init()
+
+        public virtual void Awake()
         {
             ThreadLocal.WorkerJob.Value = this;
+        }
+
+        public virtual void Start()
+        {
+
         }
 
         public virtual void Execute()

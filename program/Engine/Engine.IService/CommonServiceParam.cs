@@ -21,7 +21,7 @@ namespace Engine.IService
         Full = 4,
     }
 
-    public enum ServiceTypeEnum: byte
+    public enum ApplicationTypeEnum: byte
     {
         None = 0,
         NodeEureka,
@@ -31,15 +31,15 @@ namespace Engine.IService
         World,
     }
 
-    public struct ServiceInfo
+    public struct ApplicationInfo
     {
-        public ServiceTypeEnum ServiceType { get; set; }
-        public byte ServiceID { get; set; }
+        public ApplicationTypeEnum ApplicationType { get; set; }
+        public byte AppID { get; set; }
     }
 
     public class ServiceTypeWrapper
     {
-        public ServiceTypeEnum ServiceType { get; set; }
+        public ApplicationTypeEnum ServiceType { get; set; }
     }
 
     public class NodeInfo
@@ -49,15 +49,15 @@ namespace Engine.IService
         public string ServerIP { get; set; } //TODO 看看类型换成IPEndPoint好不好使
         public int ServerPort { get; set; }
 
-        public List<ServiceInfo> ServiceInfoList { get; set; } = new List<ServiceInfo>();
+        public List<ApplicationInfo> ApplicationInfoList { get; set; } = new List<ApplicationInfo>();
 
 
-        public List<ServiceInfo> GetServiceByType(ServiceTypeEnum serviceTypeEnum)
+        public List<ApplicationInfo> GetServiceByType(ApplicationTypeEnum serviceTypeEnum)
         {
-            var retList = new List<ServiceInfo>();
-            foreach (var serviceInfo in ServiceInfoList)
+            var retList = new List<ApplicationInfo>();
+            foreach (var serviceInfo in ApplicationInfoList)
             {
-                if (serviceInfo.ServiceType.Equals(serviceTypeEnum))
+                if (serviceInfo.ApplicationType.Equals(serviceTypeEnum))
                     retList.Add(serviceInfo);
             }
             return retList;

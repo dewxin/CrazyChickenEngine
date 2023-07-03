@@ -12,33 +12,33 @@ using Engine.IService;
 
 namespace Engine.Common.ServiceEurekaNode
 {
-    public class NodeEurekaService : GameService
+    public class NodeEurekaApplication : GameApplication
     {
-        public NodeEurekaService()
+        public NodeEurekaApplication()
         {
-            ServiceType = ServiceTypeEnum.NodeEureka;
+            ApplicationType = ApplicationTypeEnum.NodeEureka;
         }
 
         protected override void OnInitAddOn()
         {
-            AddHandler(new NodeEurekaHandler());
+            AddServiceHandler(new NodeEurekaHandler());
             RegisterOnEureka();
 
         }
 
         private void RegisterOnEureka()
         {
-            var service = FindService.ByEndPoint(GlobalConfig.Inst.EurekaMasterIPEndPoint, (byte)ServiceJobID.EurekaMasterID)
-                .GetRpc<IEurekaMasterService>();
+            var service = FindApp.ByEndPoint(GlobalConfig.Inst.EurekaMasterIPEndPoint, (byte)AppJobID.EurekaMasterID)
+                .GetService<IEurekaMasterService>();
 
             var pubTask = service.PubHostInfoAndSub(HostNode.GetNodeInfo());
 
             pubTask.ContinueWith(() =>
             {
                 var ret = pubTask.MethodCallResult;
-                foreach (var aServiceInfo in HostNode.GetServiceInfoList())
+                foreach (var aServiceInfo in HostNode.GetApplicationInfoList())
                 {
-                    FindService.ByLocal(aServiceInfo.ServiceID).GetRpc<ICommonService>()
+                    FindApp.ByLocal(aServiceInfo.AppID).GetService<ICommonService>()
                         .NotifyNodePubRet(ret);
                 }
 

@@ -1,13 +1,14 @@
-﻿using Block0.Threading.Pipe;
+﻿using Block.Assorted.Logging;
+using Block0.Threading.Pipe;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 
 namespace Block0.Threading.Worker
 {
-
 
     public partial class Worker
     {
@@ -18,13 +19,31 @@ namespace Block0.Threading.Worker
 
         public double ElapsedMs { get; protected set; }
 
+
         public void Run(Object threadContext)
         {
+            LogThreadIdWhenWindows();
             TryInitJobs();
 
             ExecuteJobs();
 
             shutdownEvent.Set();
+        }
+
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+
+        private void LogThreadIdWhenWindows()
+        {
+            try
+            {
+                Log.Info($"worker run, threadId {GetCurrentThreadId()}");
+            }
+            catch(DllNotFoundException ex)
+            {
+                //do nothing
+            }
         }
 
 
@@ -39,7 +58,14 @@ namespace Block0.Threading.Worker
                 {
                     CurrentJob = workerJob;
 
-                    workerJob.Init();
+                    workerJob.Awake();
+                }
+
+                foreach (var workerJob in WorkerJobManager.id2ManagedJobDict.Values)
+                {
+                    CurrentJob = workerJob;
+
+                    workerJob.Start();
                 }
 
                 WorkerJobManager.workerJobInited = true;
@@ -70,7 +96,18 @@ namespace Block0.Threading.Worker
 
                     CurrentJob = workerJob;
 
+#if DEBUG
                     CurrentJob.Execute();
+#else
+                    try
+                    {
+                        CurrentJob.Execute();
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Error(ex.ToString());
+                    }
+#endif
 
                     CurrentJob = null;
                     workerJob.CurrentWorker = null;

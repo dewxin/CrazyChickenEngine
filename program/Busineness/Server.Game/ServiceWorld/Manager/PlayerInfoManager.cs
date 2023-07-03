@@ -1,4 +1,5 @@
 ﻿using Block.Assorted;
+using Block.Assorted.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,7 @@ namespace Server.Game.ServiceWorld.Manager
         {
             if(NameIsTaken(name))
             {
+                Log.Warn($"name is taken:{name}");
                 playerInfo = null;
                 return false;
             }

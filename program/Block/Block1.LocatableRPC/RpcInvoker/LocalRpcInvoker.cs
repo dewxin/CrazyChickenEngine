@@ -1,4 +1,5 @@
-﻿using Block.RPC.Emitter;
+﻿using Block.Assorted.Logging;
+using Block.RPC.Emitter;
 using Block.RPC.Task;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
@@ -14,25 +15,26 @@ namespace Block1.LocatableRPC.RpcInvoker
 {
     public class LocalRpcInvoker : IRpcInvoker
     {
-        public byte DestServiceId { get; private set; }
+        public byte DestAppId { get; private set; }
         public MethodCallTaskCenter CallTaskCenter { get; private set; }
 
-        public LocalRpcInvoker(byte dstServiceId, MethodCallTaskCenter methodCallTaskCenter)
+        public LocalRpcInvoker(byte destAppId, MethodCallTaskCenter methodCallTaskCenter)
         {
-            Debug.Assert(dstServiceId != 0);
-            this.DestServiceId = dstServiceId;
+            Debug.Assert(destAppId != 0);
+            this.DestAppId = destAppId;
             this.CallTaskCenter= methodCallTaskCenter;
         }
 
         internal virtual RpcMsg NewMsg()
         {
+            Log.Debug("");
             RpcMsg localRpcMsg = new RpcMsg();
-            localRpcMsg.DestServiceId = DestServiceId;
+            localRpcMsg.DestAppId = DestAppId;
             //可能是Task Thread访问的
 
             //TODO 这里做下DEBUG 校验 如果函数调用是需要返回值的并且 没有找不到当前服务ID， 那么抛个异常
             if (ThreadLocal.WorkerJob.IsValueCreated)
-                localRpcMsg.SourceServiceId = ThreadLocal.WorkerJob.Value.JobID;
+                localRpcMsg.SourceAppId = ThreadLocal.WorkerJob.Value.JobID;
             return localRpcMsg;
         }
 

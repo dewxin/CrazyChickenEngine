@@ -26,14 +26,14 @@ namespace Engine.Common.ServiceEurekaGlobal
             return nodeId2InfoDict.Values.ToList();
         }
 
-        public List<NodeInfo> GetNodesByServiceType(ServiceTypeEnum serviceTypeEnum)
+        public List<NodeInfo> GetNodesByServiceType(ApplicationTypeEnum serviceTypeEnum)
         {
             var retList = new List<NodeInfo>();
             foreach (var nodeInfo in nodeId2InfoDict.Values)
             {
-                foreach (var service in nodeInfo.ServiceInfoList)
+                foreach (var service in nodeInfo.ApplicationInfoList)
                 {
-                    if (service.ServiceType.Equals(serviceTypeEnum))
+                    if (service.ApplicationType.Equals(serviceTypeEnum))
                     {
                         retList.Add(nodeInfo);
                         break;

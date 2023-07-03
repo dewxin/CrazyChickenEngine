@@ -15,7 +15,7 @@ namespace Share.IService.Service.Login
 
         MethodCallTask<LoginResult> PlayerLogin(AccountData logicLoginData);
 
-        MethodCallTask<TestRpcRecordResult> TestRpcRecord();
+        MethodCallTask<TestRpcRecordResult> TestRpcRecord(string str);
 
     }
 

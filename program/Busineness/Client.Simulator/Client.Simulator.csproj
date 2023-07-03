@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Engine.Common\Engine.Common.csproj" />
     <ProjectReference Include="..\Share.Common\Share.Common.csproj" />
     <ProjectReference Include="..\Share.IService\Share.IService.csproj" />
+    <ProjectReference Include="..\Share.Serializer\Share.Serializer.csproj" />
   </ItemGroup>
 
 

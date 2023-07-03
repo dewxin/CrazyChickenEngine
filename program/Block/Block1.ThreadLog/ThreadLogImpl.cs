@@ -9,15 +9,7 @@ using System.Threading.Tasks;
 
 namespace Block1.ThreadLog
 {
-    public enum LogLevel
-    {
-        None = 0,
-        Debug = 1,
-        Info,
-        Warn,
-        Error,
-        Fatal,
-    }
+
 
     public class LogMsg: JobMsg
     {

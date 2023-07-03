@@ -21,11 +21,10 @@ namespace Block.Assorted.Logging.ILogImpl
 
         private void PropagateCallerInfo(CallerInfo data)
         {
-            log4net.GlobalContext.Properties["MethodName"] = data.MemberName;
+            log4net.GlobalContext.Properties["MethodName"] = data.MethodName;
             log4net.GlobalContext.Properties["SimpleFileName"] = data.SourceFilePath.Split('\\', '/').Last();
         }
 
-        //TODO怎么进行AOP编程
         public void Debug(string message, CallerInfo data)
         {
             PropagateCallerInfo(data);

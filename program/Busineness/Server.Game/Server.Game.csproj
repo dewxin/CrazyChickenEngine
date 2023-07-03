@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\Engine\Engine.ServerEnd\Engine.ServerEnd.csproj" />
     <ProjectReference Include="..\Share.Common\Share.Common.csproj" />
     <ProjectReference Include="..\Share.IService\Share.IService.csproj" />
+    <ProjectReference Include="..\Share.Serializer\Share.Serializer.csproj" />
   </ItemGroup>
 
 

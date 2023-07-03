@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using Block.Assorted.Logging;
+using Client.Simulator.Logging;
 using ClientSimulator;
 using Engine.Common.Unit;
 using Share.Common.Unit;
@@ -13,18 +15,21 @@ namespace ClientSimulator
         static void Main(string[] args)
         {
             var node = new HostNode();
-            var service = new ClientService();
-            var config =new AllConfig() { 
-                ServiceList = new List<HostService> { service },
+            var application = new ClientApplication();
+            var config =new AllConfig() {
+                ApplicationList = new List<HostApplication> { application },
             };
+
+            Log.Init(new ConsoleImpl());
+            Share.Serializer.SerializerCenter.Init();
             node.Init(config);
             node.Run();
+            application.Awake();
 
-            service.Init();
             while (true)
             {
-                if(service.NeedsHandleMsg)
-                    service.Execute();
+                if(application.NeedsHandleMsg)
+                    application.Execute();
             }
 
             while (Console.ReadKey().KeyChar != 'q')

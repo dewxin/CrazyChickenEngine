@@ -19,14 +19,14 @@ namespace Share.IService.Param
     {
         public WorldLoginResult Result { get; set; }
         public int PlayerId { get; set; }
-        public string PlayerName { get; set; }
+        public string PlayerName { get; set; } = "";
     }
 
 
     public class PlayerMatchRequest
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
 
@@ -40,7 +40,7 @@ namespace Share.IService.Param
     public class PlayerMatchRet
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public PlayerMatchParty Party { get; set; }
     }
 

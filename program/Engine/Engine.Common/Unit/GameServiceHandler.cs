@@ -9,7 +9,7 @@ namespace Engine.Common.Unit
 {
     public class GameServiceHandler : MessageServiceHandler
     {
-        public GameService GameService { get; set; }
+        public GameApplication Application { get; set; }
 
         public GameServiceHandler()
         {

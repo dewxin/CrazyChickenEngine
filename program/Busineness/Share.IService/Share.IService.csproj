@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <OutputType>Library</OutputType>
-	  <TargetFrameworks>net462;net6.0</TargetFrameworks>
+	  <TargetFrameworks>net471;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +15,7 @@
 	</Target>
 	<!--
 
-   <UsingTask TaskName="ModifyAssembly" AssemblyFile="..\..\tool\AssemblyTool\bin\Debug\net462\Tool.AssemblyMod.dll" />
+   <UsingTask TaskName="ModifyAssembly" AssemblyFile="..\..\tool\AssemblyTool\bin\Debug\net48\Tool.AssemblyMod.dll" />
 
 	<Target Name="ModifyAsm" AfterTargets="Build">
 		<ModifyAssembly AssemblyFile="$(MSBuildProjectDirectory)\$(OutputPath)$(MSBuildProjectName).dll" />

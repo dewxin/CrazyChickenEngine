@@ -14,7 +14,7 @@ namespace GameServerBase.ServerLogin
         {
         }
 
-        public LoginService LoginService => base.GameService as LoginService;
+        public LoginApplication LoginService => base.Application as LoginApplication;
 
 
         public MethodCallTask<LoginResult> PlayerLogin(AccountData loginData)
@@ -28,9 +28,9 @@ namespace GameServerBase.ServerLogin
             return new RegisterResult { Result = RegisterResultEnum.Succeed };
         }
 
-        public MethodCallTask<TestRpcRecordResult> TestRpcRecord()
+        public MethodCallTask<TestRpcRecordResult> TestRpcRecord(string str)
         {
-            var worldClient = LoginService.FindService.ByLocal(ServiceTypeEnum.World).GetRpc<ILogin2World>();
+            var worldClient = LoginService.FindApp.ByLocal(ApplicationTypeEnum.World).GetService<ILogin2World>();
             
             var task1 = worldClient.TestRpcRecord();
             var task2 = worldClient.TestRpcRecord();

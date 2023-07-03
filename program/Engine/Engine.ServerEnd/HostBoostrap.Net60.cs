@@ -1,4 +1,6 @@
-﻿using Block0.Net.Serialize;
+﻿using Block.Assorted.Logging;
+using Block.Assorted.Logging.ILogImpl;
+using Block0.Net.Serialize;
 using Engine.Common.Unit;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,8 @@ namespace Engine.ServerEnd
         {
             var allConfig = ConfigHelper.GetAllConfigFromFiles(getterType, serviceFileNames);
             serverNode = allConfig.ServerNode;
+
+            Log.Init(new Log4NetImpl());
             serverNode.Init(allConfig);
 
             serverNode.Run();

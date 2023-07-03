@@ -9,32 +9,35 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Block1.LocatableRPC
 {
-    public class LPCServiceJob : WorkerJob
+    public class LpcAppJob : WorkerJob
     {
         private ServiceHandlerList serviceHandlerList = new ServiceHandlerList();
 
 		// 现在除了LPCServiceJob 其他地方不能调用MethodCallTask了也就是 ServieFinder
         public MethodCallTaskCenter MethodCallTaskCenter { get; set; } = new MethodCallTaskCenter();
 
-        public LPCServiceJob()
+        public LpcAppJob()
         {
         }
 
-        public void AddHandler(params MessageServiceHandler[] messageServiceHandlers)
+        public void AddServiceHandler(params MessageServiceHandler[] messageServiceHandlers)
         {
             serviceHandlerList.AddHandlerRange(messageServiceHandlers);
         }
 
-        public override void Init()
+        public override void Awake()
         {
-            base.Init();
+            base.Awake();
         }
 
+        //TODO 需要bool 返回值 表示是否处理过消息
+        //如果多次没处理过消息，则应该暂时减少空转 Worker的数量
         public override void Execute()
         {
             base.Execute();
@@ -81,7 +84,13 @@ namespace Block1.LocatableRPC
             }
 
 
+            var remoteMsg = message as RemoteRpcMsg;
+            handler.RemoteEndPoint = null;
+            if (remoteMsg != null)
+                handler.RemoteEndPoint = remoteMsg.RemoteIPEndPoint;
+
             var methodCallTask = handler.HandleMethodCall(message.MethodId, message.MethodParam);
+
             return methodCallTask; 
 
         }
@@ -92,14 +101,14 @@ namespace Block1.LocatableRPC
             IRpcInvoker rpcInvoker;
             if(remoteMsg != null)
             {
-                rpcInvoker = new NetworkRpcInvoker(remoteMsg.SourceServiceId, this.MethodCallTaskCenter)
+                rpcInvoker = new NetworkRpcInvoker(remoteMsg.SourceAppId, this.MethodCallTaskCenter)
                 {
                     RemoteIPEndPoint = remoteMsg.RemoteIPEndPoint,
                 };
             }
             else
             {
-                rpcInvoker = new LocalRpcInvoker(message.SourceServiceId, this.MethodCallTaskCenter);
+                rpcInvoker = new LocalRpcInvoker(message.SourceAppId, this.MethodCallTaskCenter);
             }
 
 

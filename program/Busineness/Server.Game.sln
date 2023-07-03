@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Block0.Rpc", "..\Block\Bloc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Block0.Net", "..\Block\Block0.Net\Block0.Net.csproj", "{FE2DEF5B-BBB4-4AF0-AC4B-4C5BF397CE72}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Block0.Assorted", "..\Block\Block0.Assorted\Block0.Assorted.csproj", "{EC2659D8-CA97-4C29-A2A9-40DD16FEC788}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Block.Assorted", "..\Block\Block0.Assorted\Block.Assorted.csproj", "{EC2659D8-CA97-4C29-A2A9-40DD16FEC788}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{418D5548-C6E9-4262-AC2C-B1CCEE8BD858}"
 EndProject
@@ -39,7 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ThirdParty", "_ThirdParty"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSerializer.Base", "..\tool\AutoSerializer\AutoSerializer.Base\AutoSerializer.Base.csproj", "{ADF4DF0F-32F9-4D28-B6CE-559453D6F5C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Share.Serializer", "Share.Serializer\Share.Serializer.csproj", "{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Share.Serializer", "Share.Serializer\Share.Serializer.csproj", "{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

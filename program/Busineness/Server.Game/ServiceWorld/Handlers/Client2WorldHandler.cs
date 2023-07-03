@@ -8,7 +8,7 @@ namespace GameServerBase.ServerWorld
 {
     public class Client2WorldHandler : GameServiceHandler, IClient2World
     {
-        private WorldService WorldService => GameService as WorldService;
+        private WorldApplication WorldService => Application as WorldApplication;
 
         public Client2WorldHandler()
         {

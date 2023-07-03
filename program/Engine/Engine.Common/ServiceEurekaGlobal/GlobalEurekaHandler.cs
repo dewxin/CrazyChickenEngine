@@ -14,7 +14,7 @@ namespace Engine.Common.ServiceEurekaGlobal
     public class GlobalEurekaHandler : GameServiceHandler, IEurekaMasterService
     {
         //private ServerInfoManager ServerInfoManager => Server.ServerInfoManager;
-        public new GlobalEurekaService GameService => base.GameService as GlobalEurekaService;
+        public new GlobalEurekaApplication GameService => base.Application as GlobalEurekaApplication;
 
 
         public GlobalEurekaHandler()

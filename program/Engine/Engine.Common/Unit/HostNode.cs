@@ -9,34 +9,31 @@ using System.Collections.Generic;
 using Block1.ThreadLog;
 using Engine.IService;
 using Block0.Net.Serialize;
-using AutoSerializer;
-using Engine.Serializer;
 
 namespace Engine.Common.Unit
 {
-    public class HostNode
+    public class HostNode:IDisposable
     {
-        protected List<HostService> serviceList = new List<HostService>();
-        public GlobalConfig GlobalConfig { get; set; }
-        public SocketConfig SocketConfig { get; set; }
+        protected List<HostApplication> applicationList = new List<HostApplication>();
+
+        public SocketConfig SocketConfig => SocketConfig.Inst;
+        public GlobalConfig GlobalConfig => GlobalConfig.Inst;
 
         public bool IsGlobalEureka { get; set; }
 
         public virtual void Init(AllConfig allConfig)
         {
-            GlobalConfig = allConfig.GlobalConfig;
-            SocketConfig = allConfig.SocketConfig;
-            GlobalConfig.Inst = GlobalConfig;
-            SocketConfig.Inst = SocketConfig;
+            GlobalConfig.Inst = allConfig.GlobalConfig; 
+            SocketConfig.Inst = allConfig.SocketConfig; 
 
-            SerializerCenter.Init();
+            Engine.Serializer.SerializerCenter.Init();
             SerializerStub.Init(new DelegateSeriazlier());
             LogExtension.Instance.EnableAsync();
-            ServiceFinder.Init();
+            ApplicationFinder.Init();
 
-            foreach (var service in allConfig.ServiceList)
+            foreach (var application in allConfig.ApplicationList)
             {
-                AddService(service);
+                AddApplication(application);
             }
 
         }
@@ -46,49 +43,40 @@ namespace Engine.Common.Unit
             WorkerManager.StartWork();
         }
 
-        private void AddService(HostService serviceJob)
+        private void AddApplication(HostApplication application)
         {
-            serviceJob.HostNode = this;
-            serviceList.Add(serviceJob);
+            application.HostNode = this;
+            applicationList.Add(application);
 
-            WorkerJobManager.AddJob(serviceJob);
+            Log.Info($"Application {application.GetType().Name} Added");
+
+            WorkerJobManager.AddJob(application);
         }
-
-
-        public void Stop()
-        {
-            foreach (var service in serviceList)
-            {
-                service.Stop();
-            }
-
-        }
-
 
         public NodeInfo GetNodeInfo()
         {
 
             return new NodeInfo()
             {
-                ServerIP = SocketConfig.IP,
-                ServerPort = SocketConfig.Port,
-                ServiceInfoList = GetServiceInfoList(),
+                ServerIP = SocketConfig.Inst.IP,
+                ServerPort = SocketConfig.Inst.Port,
+                ApplicationInfoList = GetApplicationInfoList(),
             };
 
         }
 
-        public List<ServiceInfo> GetServiceInfoList()
+        public List<ApplicationInfo> GetApplicationInfoList()
         {
-            var ret = new List<ServiceInfo>();
+            var ret = new List<ApplicationInfo>();
 
-            foreach (var service in serviceList)
+            foreach (var app in applicationList)
             {
-                if (service is GameService gameService)
+                if (app is GameApplication gameApp)
                 {
-                    var serviceInfo = new ServiceInfo()
+                    var serviceInfo = new ApplicationInfo()
                     {
-                        ServiceID = gameService.JobID,
-                        ServiceType = gameService.ServiceType,
+                        AppID = gameApp.JobID,
+                        ApplicationType = gameApp.ApplicationType,
                     };
 
                     ret.Add(serviceInfo);
@@ -97,6 +85,19 @@ namespace Engine.Common.Unit
 
             return ret;
 
+        }
+
+        public void Dispose()
+        {
+            Stop();
+        }
+
+        public void Stop()
+        {
+            foreach (var application in applicationList)
+            {
+                application.Stop();
+            }
         }
 
     }

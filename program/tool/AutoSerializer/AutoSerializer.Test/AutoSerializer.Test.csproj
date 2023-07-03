@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -13,9 +13,9 @@
 		<PackageReference Include="coverlet.collector" Version="3.1.0" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AutoSerializer.CodeGen\AutoSerializer.CodeGen.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\AutoSerializer.CodeGen\AutoSerializer.CodeGen.csproj" />
+	</ItemGroup>
 
   <ItemGroup>
     <Compile Update="Param\ClassParam.cs">
