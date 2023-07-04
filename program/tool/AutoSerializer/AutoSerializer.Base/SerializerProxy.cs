@@ -8,6 +8,7 @@ namespace AutoSerializer
     public class SerializerProxy
     {
 
+        //TODO 需要支持null字段
         private static Dictionary<Type, ISerializer> type2SerializerDict = new Dictionary<Type, ISerializer>();
 
         static SerializerProxy()

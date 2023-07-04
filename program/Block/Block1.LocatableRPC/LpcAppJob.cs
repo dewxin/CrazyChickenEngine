@@ -36,8 +36,6 @@ namespace Block1.LocatableRPC
             base.Awake();
         }
 
-        //TODO 需要bool 返回值 表示是否处理过消息
-        //如果多次没处理过消息，则应该暂时减少空转 Worker的数量
         public override void Execute()
         {
             base.Execute();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Block.Assorted.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -21,7 +22,7 @@ namespace Block0.Threading.Pipe
         public int Count => size;
         public bool IsEmpty => size == 0;
 
-        public One4OnePiepe():this(256)
+        public One4OnePiepe():this(1024)
         {
         }
 
@@ -38,6 +39,7 @@ namespace Block0.Threading.Pipe
         {
             if (size == array.Length)
             {
+                //throw new Exception("queue is full");
                 //TODO 应该允许扩容，但需要打日志
                 return false;
             }

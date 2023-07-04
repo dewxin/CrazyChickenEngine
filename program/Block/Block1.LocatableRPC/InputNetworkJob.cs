@@ -18,7 +18,7 @@ namespace Block1.LocatableRPC
     internal class InputNetworkJob : WorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.InputNetwork;
-        public override bool NeedsHandleMsg => CurrentWorker == null && UdpSocketManager.NeedHandle;
+        public override int Priority => UdpSocketManager.AvailableData;
 
         public override void Start()
         {

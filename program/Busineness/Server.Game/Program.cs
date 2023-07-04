@@ -35,7 +35,7 @@ namespace Server.Game
 				String.Join("\n", errs)));
 
 
-			//LogExtension.Instance.SetLevel(LogLevel.Info);
+			LogExtension.Instance.SetLevel(LogLevel.Info);
 			Share.Serializer.SerializerCenter.Init();
 			HostBoostrap.Start(typeof(GlobalInfoGetter),result.Value.StartFiles);
 		}

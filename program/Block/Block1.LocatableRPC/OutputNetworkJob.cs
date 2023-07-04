@@ -29,7 +29,6 @@ namespace Block1.LocatableRPC
             while (TryGetMsg(out JobMsg item))
             {
 
-                Log.Debug("get a msg");
                 var rpcMsg = item as RemoteRpcMsg;
                 if (rpcMsg == null)
                 {
@@ -52,7 +51,6 @@ namespace Block1.LocatableRPC
         //发送到网络
         private void ForwardOutputMsg(RemoteRpcMsg rpcMsg)
         {
-            Log.Debug("");
             NetMessage netMessage = new NetMessage
                 (
                 sourceAppId: rpcMsg.SourceAppId,

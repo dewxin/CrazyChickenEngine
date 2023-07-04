@@ -48,20 +48,22 @@ namespace Block0.Threading.Worker
                 id2ManagedJobDict.Add(workerJob.JobID, workerJob);
         }
 
-        public static bool HasJobToHandle(out WorkerJob workerJob)
+        public static bool GetJobOfHighestPriority(out WorkerJob workerJob)
         {
+            int maxPriority = 0;
+            workerJob = null;
             foreach(var job in id2ManagedJobDict.Values)
             {
-                if(job.NeedsHandleMsg) 
-                {
+                if (job.CurrentWorker != null)
+                    continue;
+
+                if (job.Priority > maxPriority)
                     workerJob = job;
-                    return true; 
-                }
             }
 
-            workerJob = null;
-            return false;
+            return workerJob != null;
         }
+
 
     }
 

@@ -12,10 +12,16 @@ namespace Block0.Threading.Worker
 
     public partial class Worker
     {
-        public WorkerJob CurrentJob { get; set; }
-
         public bool NeedStop { get; protected set; }
-        AutoResetEvent shutdownEvent = new AutoResetEvent(false);
+
+
+        public bool Sentinel { get; set; } 
+        public float IdleRate { get; set; } = 0;
+        //TODO move to config
+        const float SLEEP_IDLE_RATE = 0.5f;
+        const float NEW_SAMPLE_WEIGHT = 0.125f;
+
+        public WorkerJob CurrentJob { get; set; }
 
         public double ElapsedMs { get; protected set; }
 
@@ -27,7 +33,6 @@ namespace Block0.Threading.Worker
 
             ExecuteJobs();
 
-            shutdownEvent.Set();
         }
 
 
@@ -57,15 +62,15 @@ namespace Block0.Threading.Worker
                 foreach (var workerJob in WorkerJobManager.id2ManagedJobDict.Values)
                 {
                     CurrentJob = workerJob;
-
                     workerJob.Awake();
+                    CurrentJob = null;
                 }
 
                 foreach (var workerJob in WorkerJobManager.id2ManagedJobDict.Values)
                 {
                     CurrentJob = workerJob;
-
                     workerJob.Start();
+                    CurrentJob = null;
                 }
 
                 WorkerJobManager.workerJobInited = true;
@@ -83,10 +88,13 @@ namespace Block0.Threading.Worker
                 var nowTimeMs = stopwatch.Elapsed.TotalMilliseconds;
                 var elapsedMs = nowTimeMs - lastTimeMs;
                 lastTimeMs = nowTimeMs;
-
                 ElapsedMs = elapsedMs;
 
-                while (WorkerJobManager.HasJobToHandle(out var workerJob) /*并且剩余时间片的估算值能够处理此次task*/)
+
+                byte idleCount = 1;
+
+                while (WorkerJobManager.GetJobOfHighestPriority(out var workerJob) 
+                    /*TODO 并且剩余时间片的估算值能够处理此次task*/)
                 {
                     var prevWorker = Interlocked.CompareExchange(ref workerJob.CurrentWorker, this, null);
 
@@ -95,6 +103,7 @@ namespace Block0.Threading.Worker
                         continue;
 
                     CurrentJob = workerJob;
+                    idleCount = 0;
 
 #if DEBUG
                     CurrentJob.Execute();
@@ -113,7 +122,22 @@ namespace Block0.Threading.Worker
                     workerJob.CurrentWorker = null;
                 }
 
-                Thread.Yield();
+
+                if(Sentinel)
+                {
+                    Thread.Yield();
+                }
+                else
+                {
+                    IdleRate = IdleRate * (1 - NEW_SAMPLE_WEIGHT) + NEW_SAMPLE_WEIGHT * idleCount;
+                    if (IdleRate > SLEEP_IDLE_RATE)
+                    {
+                        WorkerManager.WaitForJob(this);
+                    }
+                }
+
+
+
             }
         }
 
@@ -121,7 +145,6 @@ namespace Block0.Threading.Worker
         public void Stop()
         {
             NeedStop = true;
-            shutdownEvent.WaitOne();
         }
     }
 }

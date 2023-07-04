@@ -7,6 +7,7 @@ using Engine.Common.Unit;
 using Share.Common.Unit;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ClientSimulator
 {
@@ -21,6 +22,7 @@ namespace ClientSimulator
             };
 
             Log.Init(new ConsoleImpl());
+            LogExtension.Instance.SetLevel(LogLevel.Info);
             Share.Serializer.SerializerCenter.Init();
             node.Init(config);
             node.Run();
@@ -28,7 +30,8 @@ namespace ClientSimulator
 
             while (true)
             {
-                if(application.NeedsHandleMsg)
+                application.TryMatch();
+                if (application.Priority > 0)
                     application.Execute();
             }
 

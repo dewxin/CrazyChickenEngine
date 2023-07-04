@@ -12,12 +12,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClientSimulator
 {
     internal class ClientApplication: HostApplication, IUnManagedJob
     {
+        private int playerCount = 0;
+
+        private int matchSuccessCount = 0;
+
+        private IClient2World worldClient;
+
+        private long timeRecord;
+
+        private int playerId = -1;
+        private string playerName;
         protected override void OnInit()
         {
             GetWorldNode();
@@ -63,11 +74,17 @@ namespace ClientSimulator
 
 
                 var worldInfo = ret.Single().GetServiceByType(ApplicationTypeEnum.World).Single();
-                var worldClient = ApplicationFinder.ByEndPoint(eurekaMasterEndPoint, worldInfo.AppID).GetService<IClient2World>();
+                worldClient = ApplicationFinder.ByEndPoint(eurekaMasterEndPoint, worldInfo.AppID).GetService<IClient2World>();
 
 
-                TryLogin(worldClient);
-                TryLogin(worldClient);
+                //while(true)
+                {
+
+                    TryLogin();
+
+                    //Thread.Sleep(0);
+
+                }
                 
 
             });
@@ -76,25 +93,55 @@ namespace ClientSimulator
         }
 
 
-        private void TryLogin(IClient2World worldClient)
+        public void TryLogin()
         {
 
             var random = new Random((int)DateTime.Now.Ticks);
-            string name = "dd" + random.Next();
+            playerCount = random.Next();
+            playerCount++;
+            string name = "dd" + playerCount;
 
             var loginTask = worldClient.Login(new WorldLoginData { Name = name });
 
             loginTask.ContinueWith(() =>
             {
                 var loginRet = loginTask.MethodCallResult;
-                var matchTask = worldClient.EnqueueForMatch(new PlayerMatchRequest() { Id = loginRet.PlayerId, Name = loginRet.PlayerName });
 
-                matchTask.ContinueWith(() =>
-                {
-                    var result = matchTask.MethodCallResult;
+                playerId = loginRet.PlayerId;
+                playerName= loginRet.PlayerName;
+
+
+
+            });
+        }
+
+
+        public void TryMatch()
+        {
+            if (playerId <= 0)
+            {
+                Log.Info("playerId < 0");
+                return;
+            }
+            var matchTask = worldClient.EnqueueForMatch(new PlayerMatchRequest() { Id = playerId, Name = playerName });
+
+            matchTask.ContinueWith(() =>
+            {
+                var result = matchTask.MethodCallResult;
+
+                if(result.MatchSucceed)
                     Log.Debug($"{result.MatchSucceed}, {result.PlayerData[0].Name} vs {result.PlayerData[1].Name}");
 
-                });
+                matchSuccessCount++;
+                if (matchSuccessCount % 1000 == 0)
+                {
+                    var oldTick = timeRecord;
+                    timeRecord = DateTime.Now.Ticks;
+                    long intervalTick = timeRecord - oldTick;
+                    Log.Info($"matchSuccessCount={matchSuccessCount} intervalTick={intervalTick}");
+
+                }
+
             });
         }
     }

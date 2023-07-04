@@ -42,11 +42,6 @@ namespace Engine.Common.Unit
 
         protected abstract void OnInit();
 
-        public override void Execute()
-        {
-            base.Execute();
-
-        }
 
 
         protected override void AfterHandleMessage()

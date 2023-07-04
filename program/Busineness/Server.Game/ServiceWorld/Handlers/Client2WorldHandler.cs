@@ -27,7 +27,7 @@ namespace GameServerBase.ServerWorld
 
             if(!startMatchSucceed)
             {
-                Log.Error($"fail");
+                //Log.Warn($"already in match Id{playerInfo.Id} {playerInfo.Name}");
                 return new MatchResult { MatchSucceed = false, };
             }
 

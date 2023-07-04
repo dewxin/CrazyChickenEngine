@@ -16,6 +16,8 @@ namespace Block0.Net
     {
         public static void Send(byte[] bytes, IPEndPoint ipEndPoint)
         {
+            //远程主机可能会关闭连接，异常会在接收时抛出
+            //TODO 发送套接字和接受套接字要不要拆开
             UdpClient.Send(bytes, bytes.Length, ipEndPoint);
         }
     }
@@ -24,7 +26,7 @@ namespace Block0.Net
     {
         public static int ListenPort { get; private set; }
         public static UdpClient UdpClient { get; private set; }
-        public static bool NeedHandle => UdpClient.Client.Available>0;
+        public static int AvailableData => UdpClient.Client.Available;
 
         private static IPEndPoint point = new IPEndPoint(IPAddress.Any, 0);
 
@@ -66,7 +68,8 @@ namespace Block0.Net
             catch (SocketException e)
             {
                 Log.Error(e.ToString());
-                throw e;
+                return false;
+                //throw e;
             }
 
         }

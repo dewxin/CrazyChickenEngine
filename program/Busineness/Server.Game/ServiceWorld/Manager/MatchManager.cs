@@ -1,4 +1,5 @@
-﻿using Block.RPC.Task;
+﻿using Block.Assorted.Logging;
+using Block.RPC.Task;
 using Share.IService.Param;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,8 @@ namespace Server.Game.ServiceWorld.Manager
                 var task2 = taskQueue.Dequeue();
                 task2.MatchResult= matchResult;
                 task2.OnFinish();
+
+                Log.Info($"matchSucceed {playerInfo2.Name}vs{playerInfo1.Name}");
             }
         }
 

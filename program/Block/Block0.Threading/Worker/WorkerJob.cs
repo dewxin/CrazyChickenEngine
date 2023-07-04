@@ -32,7 +32,8 @@ namespace Block0.Threading.Worker
         
         public JobMsg CurrentMsg { get; private set; }
 
-        public virtual bool NeedsHandleMsg => ReceivingPipe.Count > 0 && CurrentWorker == null;
+        public virtual int Priority => ReceivingPipe.Count;
+
         internal Many4OnePipe<JobMsg> ReceivingPipe { get; private set; } = new Many4OnePipe<JobMsg>();
         public volatile Worker CurrentWorker;
 
@@ -68,6 +69,9 @@ namespace Block0.Threading.Worker
 
             var job = WorkerJobManager.GetJob(msg.DestJobId);
             job.ReceivingPipe.SpinEnqueue(msg);
+
+
+            WorkerManager.HintJobCount(1);
         }
 
         private static void TryAttachStackInfo2Msg(JobMsg msg)

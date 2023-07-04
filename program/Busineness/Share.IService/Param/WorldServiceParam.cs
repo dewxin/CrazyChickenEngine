@@ -50,7 +50,7 @@ namespace Share.IService.Param
         public bool MatchSucceed { get; set; }
         public int MapId { get; set; }
 
-        public List<PlayerMatchRet> PlayerData { get; set; }
+        public List<PlayerMatchRet> PlayerData { get; set; } = new List<PlayerMatchRet>();
     }
 
 
