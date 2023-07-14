@@ -48,8 +48,9 @@ namespace Block0.Threading.Worker
                 id2ManagedJobDict.Add(workerJob.JobID, workerJob);
         }
 
-        public static bool GetJobOfHighestPriority(out WorkerJob workerJob)
+        public static bool GetUrgentJobAndCount(out WorkerJob workerJob, out int count)
         {
+            count = 0;
             int maxPriority = 0;
             workerJob = null;
             foreach(var job in id2ManagedJobDict.Values)
@@ -57,7 +58,9 @@ namespace Block0.Threading.Worker
                 if (job.CurrentWorker != null)
                     continue;
 
-                if (job.Priority > maxPriority)
+                if(job.ExecutePriority > 0)
+                    count++;
+                if (job.ExecutePriority > maxPriority)
                     workerJob = job;
             }
 

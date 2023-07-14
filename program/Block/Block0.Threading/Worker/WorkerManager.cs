@@ -1,4 +1,5 @@
-﻿using Block.Assorted.Logging;
+﻿using Block.Assorted;
+using Block.Assorted.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,9 +14,11 @@ namespace Block0.Threading.Worker
     {
         private static List<Worker> workerList = new List<Worker>();
 
-        private static int WaitWorkerCount = 0;
+        private static int waitWorkerCount = 0;
         private static AutoResetEvent WorkerHireEvent = new AutoResetEvent(false);
 
+        public static int WaitWorkerCount => waitWorkerCount;
+        public static int WorkerCount => workerList.Count;
         public static void StartWork()
         {
             StartWork(WorkerCountHeuristic());
@@ -65,13 +68,10 @@ namespace Block0.Threading.Worker
             if (worker.Sentinel)
                 return;
 
-            Interlocked.Increment(ref WaitWorkerCount);
-            //如果打开这里的注释，应该能看到 WaitWorkerCount数量在波动
-            //Log.Info($"+1 ={WaitWorkerCount}"); 
+            Interlocked.Increment(ref waitWorkerCount);
             WorkerHireEvent.WaitOne();
             worker.IdleRate = 0;
-            Interlocked.Decrement(ref WaitWorkerCount);
-            //Log.Info($"-1 ={WaitWorkerCount}");
+            Interlocked.Decrement(ref waitWorkerCount);
         }
 
         public static void EndWork()

@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 
-namespace Block0.Net.Serialize
+namespace Block0.Rpc.Serialize
 {
     public class SerializerStub
     {

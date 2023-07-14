@@ -1,6 +1,7 @@
 ﻿using Block.Rpc;
 using Block0.Threading.Worker;
 using Block1.LocatableRPC;
+using Block1.LocatableRPC.Job;
 using System;
 using System.Collections.Generic;
 using System.Linq;

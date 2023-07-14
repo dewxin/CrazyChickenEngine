@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Block1.LocatableRPC
 {
 
-    internal class RpcMsg : JobMsg
+    internal class RpcJobMsg : JobMsg
     {
         public ushort MethodId { get; set; }
         public ushort MethodCallTaskId { get; set; }
@@ -19,7 +19,7 @@ namespace Block1.LocatableRPC
         public bool IsMethodCallDoneReply { get; set; } = false;
     }
 
-    internal class RemoteRpcMsg : RpcMsg
+    internal class RemoteRpcJobMsg : RpcJobMsg
     {
         public enum ForwardEnum
         {

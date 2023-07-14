@@ -1,5 +1,5 @@
 ﻿using AutoSerializer;
-using Block0.Net.Serialize;
+using Block0.Rpc.Serialize;
 using System;
 
 namespace Engine.Common.Unit

@@ -4,16 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 
 
 namespace Block0.Threading.Worker
 {
-
     public partial class Worker
     {
         public bool NeedStop { get; protected set; }
-
 
         public bool Sentinel { get; set; } 
         public float IdleRate { get; set; } = 0;
@@ -93,7 +92,7 @@ namespace Block0.Threading.Worker
 
                 byte idleCount = 1;
 
-                while (WorkerJobManager.GetJobOfHighestPriority(out var workerJob) 
+                while (WorkerJobManager.GetUrgentJobAndCount(out var workerJob, out int count) 
                     /*TODO 并且剩余时间片的估算值能够处理此次task*/)
                 {
                     var prevWorker = Interlocked.CompareExchange(ref workerJob.CurrentWorker, this, null);
@@ -101,6 +100,10 @@ namespace Block0.Threading.Worker
                     //不是null说明被其他Worker抢了
                     if (prevWorker != null)
                         continue;
+
+                    if (count > 1)
+                        WorkerManager.HintJobCount(count - 1);
+
 
                     CurrentJob = workerJob;
                     idleCount = 0;
@@ -122,21 +125,16 @@ namespace Block0.Threading.Worker
                     workerJob.CurrentWorker = null;
                 }
 
+                IdleRate = IdleRate * (1 - NEW_SAMPLE_WEIGHT) + NEW_SAMPLE_WEIGHT * idleCount;
 
-                if(Sentinel)
+                if(!Sentinel && IdleRate > SLEEP_IDLE_RATE)
                 {
-                    Thread.Yield();
+                    WorkerManager.WaitForJob(this);
                 }
                 else
                 {
-                    IdleRate = IdleRate * (1 - NEW_SAMPLE_WEIGHT) + NEW_SAMPLE_WEIGHT * idleCount;
-                    if (IdleRate > SLEEP_IDLE_RATE)
-                    {
-                        WorkerManager.WaitForJob(this);
-                    }
+                    Thread.Yield();
                 }
-
-
 
             }
         }

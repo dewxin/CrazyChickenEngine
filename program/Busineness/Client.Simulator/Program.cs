@@ -3,6 +3,7 @@
 using Block.Assorted.Logging;
 using Client.Simulator.Logging;
 using ClientSimulator;
+using Engine.Common.AppCommon;
 using Engine.Common.Unit;
 using Share.Common.Unit;
 using System;
@@ -16,9 +17,10 @@ namespace ClientSimulator
         static void Main(string[] args)
         {
             var node = new HostNode();
+            node.Name = "Client";
             var application = new ClientApplication();
             var config =new AllConfig() {
-                ApplicationList = new List<HostApplication> { application },
+                ApplicationList = new List<HostApplication> { application, new CommonApplication() },
             };
 
             Log.Init(new ConsoleImpl());
@@ -31,7 +33,7 @@ namespace ClientSimulator
             while (true)
             {
                 application.TryMatch();
-                if (application.Priority > 0)
+                if (application.ExecutePriority > 0)
                     application.Execute();
             }
 

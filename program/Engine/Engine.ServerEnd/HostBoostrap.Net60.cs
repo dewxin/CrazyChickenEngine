@@ -1,6 +1,6 @@
 ﻿using Block.Assorted.Logging;
 using Block.Assorted.Logging.ILogImpl;
-using Block0.Net.Serialize;
+using Block0.Rpc.Serialize;
 using Engine.Common.Unit;
 using System;
 using System.Collections.Generic;

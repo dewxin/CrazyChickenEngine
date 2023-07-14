@@ -32,6 +32,8 @@ namespace AutoSerializer
         {
             if (type.IsValueType)
                 return;
+            if (TypeHelper.Is<IgnoreAttribute>(type))
+                return;
             if (TypeHelper.IsPrimitive(type))
                 return;
             if (RefTypeCodeCache.Dict.ContainsKey(type))
@@ -40,7 +42,7 @@ namespace AutoSerializer
             TryCollectPropertyTypeCode(type);
 
 
-            if(!TypeHelper.IsTransparent(type))
+            if(!TypeHelper.Is<TransparentAttribute>(type))
             {
                 RefTypeCode codeCache = new RefTypeCode();
                 codeCache.Type = type;

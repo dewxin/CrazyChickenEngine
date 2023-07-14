@@ -13,6 +13,7 @@ namespace AutoSerializer
 
         static SerializerProxy()
         {
+            SerializerProxy.AddSerializer(typeof(BoolC), new BoolCSerializer());
             SerializerProxy.AddSerializer(typeof(ByteC), new ByteCSerializer());
             SerializerProxy.AddSerializer(typeof(Int16C), new Int16CSerializer());
             SerializerProxy.AddSerializer(typeof(Int32C), new Int32CSerializer());

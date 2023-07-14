@@ -8,12 +8,15 @@ using Block.Assorted.Logging;
 using System.Collections.Generic;
 using Block1.ThreadLog;
 using Engine.IService;
-using Block0.Net.Serialize;
+using Block0.Rpc.Serialize;
+using EasyPerformanceCounter;
+using System.Diagnostics;
 
 namespace Engine.Common.Unit
 {
     public class HostNode:IDisposable
     {
+        public string Name { get; set; }
         protected List<HostApplication> applicationList = new List<HostApplication>();
 
         public SocketConfig SocketConfig => SocketConfig.Inst;
@@ -21,8 +24,11 @@ namespace Engine.Common.Unit
 
         public bool IsGlobalEureka { get; set; }
 
-        public virtual void Init(AllConfig allConfig)
+        public void Init(AllConfig allConfig)
         {
+            Debug.Assert(Name!= null);
+            Console.Title = Name;
+
             GlobalConfig.Inst = allConfig.GlobalConfig; 
             SocketConfig.Inst = allConfig.SocketConfig; 
 

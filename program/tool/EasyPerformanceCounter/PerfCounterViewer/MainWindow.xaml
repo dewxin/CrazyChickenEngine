@@ -1,0 +1,23 @@
+﻿<Window x:Class="PerfCounterViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PerfCounterViewer" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Icon="./Resources/Scope.ico"
+        Title="MainWindow" Height="450" Width="800">
+    <WrapPanel Name="container" Orientation="Horizontal">
+
+        <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="1" CornerRadius="8,8,3,3">
+            <StackPanel>
+                <Image Source="./Resources/Scope.ico" Height="32" Width="32"></Image>
+                <Label Margin="3" HorizontalAlignment="Center">Type to search the domain</Label>
+                <TextBox></TextBox>
+                <StackPanel  Name="domainPanel" Loaded="domainPanel_Loaded"></StackPanel>
+            </StackPanel>
+        </Border>
+
+
+    </WrapPanel>
+</Window>

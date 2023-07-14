@@ -17,12 +17,15 @@ namespace Block0.Threading.Pipe
 
         //tail只跟生产者有关
         private int tail;       // The index at which to enqueue if the queue isn't full.
-        private volatile int size;       // Number of elements.
+
+
+        private int size;       // Number of elements.
 
         public int Count => size;
         public bool IsEmpty => size == 0;
 
-        public One4OnePiepe():this(1024)
+        //TODO 不同的Job队列大小应该不一样，比如日志不看重响应速度，但需要保证日志不丢失
+        public One4OnePiepe():this(10240)
         {
         }
 
@@ -37,10 +40,10 @@ namespace Block0.Threading.Pipe
         //生产者线程
         public virtual bool TryEnqueue(T item)
         {
-            if (size == array.Length)
+            if (Volatile.Read(ref size) == array.Length)
             {
-                //throw new Exception("queue is full");
-                //TODO 应该允许扩容，但需要打日志
+                //TODO 快满了就告诉调用方这边快满了
+                throw new Exception($"queue is full, {item.ToString()}");
                 return false;
             }
 

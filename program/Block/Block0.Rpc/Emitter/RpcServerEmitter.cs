@@ -101,7 +101,6 @@ namespace Block.RPC.Emitter
         }
 
 
-
         #region service interface type
         public static Type GetServiceInterfaceDirect(Type serviceImplType)
         {

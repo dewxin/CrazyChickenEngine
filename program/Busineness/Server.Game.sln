@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSerializer.Base", "..\t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Share.Serializer", "Share.Serializer\Share.Serializer.csproj", "{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyPerformanceCounter", "..\tool\EasyPerformanceCounter\Core\EasyPerformanceCounter.csproj", "{8B7917EF-6BCF-4D3F-9E2B-806F790E547A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC87572F-6A32-4FD5-A3B1-805D00CFFA04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B7917EF-6BCF-4D3F-9E2B-806F790E547A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B7917EF-6BCF-4D3F-9E2B-806F790E547A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B7917EF-6BCF-4D3F-9E2B-806F790E547A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B7917EF-6BCF-4D3F-9E2B-806F790E547A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +133,7 @@ Global
 		{1A139A3B-09CD-4F92-80DA-040067A1D3DC} = {418D5548-C6E9-4262-AC2C-B1CCEE8BD858}
 		{B892599F-E080-47B0-A7F0-A598D288D8BA} = {418D5548-C6E9-4262-AC2C-B1CCEE8BD858}
 		{ADF4DF0F-32F9-4D28-B6CE-559453D6F5C5} = {EE67C90D-0EBE-4EAD-B1DD-3E1244837D10}
+		{8B7917EF-6BCF-4D3F-9E2B-806F790E547A} = {EE67C90D-0EBE-4EAD-B1DD-3E1244837D10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95BFFFE2-222D-4366-8F97-475209392680}

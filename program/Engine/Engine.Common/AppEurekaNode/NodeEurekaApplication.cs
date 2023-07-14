@@ -9,6 +9,7 @@ using Block1.LocatableRPC;
 using Block.Assorted.Logging;
 using Engine.Common.Unit;
 using Engine.IService;
+using EasyPerformanceCounter;
 
 namespace Engine.Common.ServiceEurekaNode
 {
@@ -23,6 +24,11 @@ namespace Engine.Common.ServiceEurekaNode
         {
             AddServiceHandler(new NodeEurekaHandler());
             RegisterOnEureka();
+
+        }
+
+        public override void Update()
+        {
 
         }
 

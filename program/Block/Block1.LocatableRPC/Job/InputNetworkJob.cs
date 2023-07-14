@@ -1,24 +1,18 @@
 ﻿using Block.Assorted.Logging;
 using Block.RPC.Emitter;
-using Block.RPC.Task;
 using Block0.Net;
-using Block0.Net.Serialize;
-using Block0.Threading.Pipe;
+using Block0.Rpc;
+using Block0.Rpc.Serialize;
 using Block0.Threading.Worker;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Block1.LocatableRPC
+namespace Block1.LocatableRPC.Job
 {
     internal class InputNetworkJob : WorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.InputNetwork;
-        public override int Priority => UdpSocketManager.AvailableData;
+        public override int ExecutePriority => UdpSocketManager.AvailableData;
 
         public override void Start()
         {
@@ -28,19 +22,19 @@ namespace Block1.LocatableRPC
 
         public override void Execute()
         {
-            while (UdpSocketManager.TryGetMessage(out var netMessage, out var iPEndPoint))
+            while (UdpSocketManager.TryGetMessage(out var byteSeg, out var iPEndPoint))
             {
+                var netMessage = RpcMessage.Parse(byteSeg);
                 OnReceiveNetMessage(netMessage, iPEndPoint);
             }
         }
 
 
-
         //来自网络的数据包，转发到对应的服务
-        private void OnReceiveNetMessage(NetMessage netMessage, IPEndPoint ipEndPoint)
+        private void OnReceiveNetMessage(RpcMessage netMessage, IPEndPoint ipEndPoint)
         {
             Log.Debug($"DestAppId={netMessage.DestAppId} SourceAppId={netMessage.SourceAppId} MethodId={netMessage.MethodID} TaskId={netMessage.MethodCallTaskID} IsReply={netMessage.IsReply}");
-            RemoteRpcMsg remoteRpcMsg = new RemoteRpcMsg()
+            RemoteRpcJobMsg remoteRpcMsg = new RemoteRpcJobMsg()
             {
                 RemoteIPEndPoint = ipEndPoint,
                 SourceAppId = netMessage.SourceAppId,
@@ -65,17 +59,17 @@ namespace Block1.LocatableRPC
                 Log.Debug("enter call");
                 Type paramType = RpcServerCodeEmitter.GetMethodParamType(remoteRpcMsg.MethodId);
 
-                if(paramType!=null && paramType != typeof(void)) 
+                if (paramType != null && paramType != typeof(void))
                     remoteRpcMsg.MethodParam = SerializerStub.Deserialize(paramType, netMessage.MethodParamBytes);
             }
 
 
-            WorkerJob.SendMsgToJob(remoteRpcMsg);
+            SendMsgToJob(remoteRpcMsg);
         }
 
 
 
     }
 
-   
+
 }

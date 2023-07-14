@@ -11,12 +11,23 @@ namespace Block.Assorted
     public class IDGenerator
     {
         //Id重复利用池
-        HashSet<int> idSet = new HashSet<int>();
+        Queue<int> idPool = new Queue<int>();
         // 当前ID索引
         private int idIndex = 0;
 
         public IDGenerator() { }
         public IDGenerator(int startIndex) { idIndex = startIndex; }
+
+
+        public static IDGenerator Create(int capacity = 4, int startIndex = 1)
+        {
+            IDGenerator generator = new IDGenerator();
+            generator.idPool = new Queue<int>(capacity);
+            generator.idIndex= startIndex;
+            return generator;
+        }
+
+
 
         public byte GetByteID()
         {
@@ -37,19 +48,18 @@ namespace Block.Assorted
         public int GetIntID()
         {
 
-            if (idSet.Count != 0)
+            if (idPool.Count != 0)
             {
-                int retId = idSet.First();
-                idSet.Remove(retId);
+                int retId = idPool.Dequeue();
                 return retId;
             }
 
             return idIndex++;
         }
 
-        public void ReleaseID(int id)
+        public void ReturnID(int id)
         {
-            idSet.Add(id);
+            idPool.Enqueue(id);
         }
 
     }

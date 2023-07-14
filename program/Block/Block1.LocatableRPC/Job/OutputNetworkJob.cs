@@ -2,7 +2,7 @@
 using Block.RPC.Emitter;
 using Block.RPC.Task;
 using Block0.Net;
-using Block0.Net.Serialize;
+using Block0.Rpc;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
 using System;
@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Block1.LocatableRPC
+namespace Block1.LocatableRPC.Job
 {
     internal class OutputNetworkJob : WorkerJob, IUniqueJobID
     {
@@ -29,7 +29,7 @@ namespace Block1.LocatableRPC
             while (TryGetMsg(out JobMsg item))
             {
 
-                var rpcMsg = item as RemoteRpcMsg;
+                var rpcMsg = item as RemoteRpcJobMsg;
                 if (rpcMsg == null)
                 {
                     Log.Warn($"msg is not Remote: srcJob{item.SourceJobId} destJob{item.DestJobId}");
@@ -39,7 +39,7 @@ namespace Block1.LocatableRPC
 
                 rpcMsg.DestAppId = rpcMsg.RealDestAppId;
 
-                if(rpcMsg.ForwardType == RemoteRpcMsg.ForwardEnum.Output)
+                if(rpcMsg.ForwardType == RemoteRpcJobMsg.ForwardEnum.Output)
                 {
                     ForwardOutputMsg(rpcMsg);
                 }
@@ -49,9 +49,9 @@ namespace Block1.LocatableRPC
 
 
         //发送到网络
-        private void ForwardOutputMsg(RemoteRpcMsg rpcMsg)
+        private void ForwardOutputMsg(RemoteRpcJobMsg rpcMsg)
         {
-            NetMessage netMessage = new NetMessage
+            RpcMessage netMessage = new RpcMessage
                 (
                 sourceAppId: rpcMsg.SourceAppId,
                 destAppId: rpcMsg.RealDestAppId,

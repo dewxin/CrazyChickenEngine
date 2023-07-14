@@ -24,6 +24,7 @@ namespace Engine.IService
     public enum ApplicationTypeEnum: byte
     {
         None = 0,
+        Common,
         NodeEureka,
         GlobalEureka,
         Logic,

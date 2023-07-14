@@ -3,7 +3,6 @@ using Block.RPC.Emitter;
 using Block.RPC.Task;
 using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
-using Block1.LocatableRPC;
 using Block1.LocatableRPC.RpcInvoker;
 using System;
 using System.Collections.Generic;
@@ -13,13 +12,13 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Block1.LocatableRPC
+namespace Block1.LocatableRPC.Job
 {
-    public class LpcAppJob : WorkerJob
+    public abstract class LpcAppJob : WorkerJob
     {
         private ServiceHandlerList serviceHandlerList = new ServiceHandlerList();
 
-		// 现在除了LPCServiceJob 其他地方不能调用MethodCallTask了也就是 ServieFinder
+        // 现在除了LPCServiceJob 其他地方不能调用MethodCallTask了也就是 ServieFinder
         public MethodCallTaskCenter MethodCallTaskCenter { get; set; } = new MethodCallTaskCenter();
 
         public LpcAppJob()
@@ -36,13 +35,19 @@ namespace Block1.LocatableRPC
             base.Awake();
         }
 
+        public virtual void Update()
+        {
+
+        }
+
         public override void Execute()
         {
             base.Execute();
+            Update();
 
             while (TryGetMsg(out JobMsg item))
             {
-                var rpcMsg = item as RpcMsg;
+                var rpcMsg = item as RpcJobMsg;
                 if (rpcMsg == null)
                 {
                     //TODO 记录一下未能处理的异常
@@ -52,7 +57,7 @@ namespace Block1.LocatableRPC
 
                 var retVal = HandleMessage(rpcMsg);
                 //没有返回值 不需要处理
-                if(retVal != null) 
+                if (retVal != null)
                     SendResponse(rpcMsg, retVal);
 
                 AfterHandleMessage();
@@ -67,7 +72,7 @@ namespace Block1.LocatableRPC
         }
 
 
-        private MethodCallTask HandleMessage(RpcMsg message)
+        private MethodCallTask HandleMessage(RpcJobMsg message)
         {
             if (message.IsMethodCallDoneReply)
             {
@@ -76,43 +81,43 @@ namespace Block1.LocatableRPC
             }
 
             var handler = serviceHandlerList.FindHandler(message.MethodId);
-            if(handler == null)
+            if (handler == null)
             {
                 throw new ArgumentException($"Cannot find service handle methodID {message.MethodId}");
             }
 
 
-            var remoteMsg = message as RemoteRpcMsg;
+            var remoteMsg = message as RemoteRpcJobMsg;
             handler.RemoteEndPoint = null;
             if (remoteMsg != null)
                 handler.RemoteEndPoint = remoteMsg.RemoteIPEndPoint;
 
             var methodCallTask = handler.HandleMethodCall(message.MethodId, message.MethodParam);
 
-            return methodCallTask; 
+            return methodCallTask;
 
         }
 
-        private void SendResponse(RpcMsg message, MethodCallTask methodCallTask)
+        private void SendResponse(RpcJobMsg message, MethodCallTask methodCallTask)
         {
-            var remoteMsg = message as RemoteRpcMsg;
+            var remoteMsg = message as RemoteRpcJobMsg;
             IRpcInvoker rpcInvoker;
-            if(remoteMsg != null)
+            if (remoteMsg != null)
             {
-                rpcInvoker = new NetworkRpcInvoker(remoteMsg.SourceAppId, this.MethodCallTaskCenter)
+                rpcInvoker = new NetworkRpcInvoker(remoteMsg.SourceAppId, MethodCallTaskCenter)
                 {
                     RemoteIPEndPoint = remoteMsg.RemoteIPEndPoint,
                 };
             }
             else
             {
-                rpcInvoker = new LocalRpcInvoker(message.SourceAppId, this.MethodCallTaskCenter);
+                rpcInvoker = new LocalRpcInvoker(message.SourceAppId, MethodCallTaskCenter);
             }
 
 
             if (methodCallTask.WaitCount > 0)
             {
-                var sendResponseTask = 
+                var sendResponseTask =
                     BaseTask.New(() => rpcInvoker.SendResponse(methodCallTask.Result, message.MethodCallTaskId));
                 methodCallTask.ContinueWith(sendResponseTask);
             }

@@ -19,12 +19,12 @@ namespace Block1.LocatableRPC.RpcInvoker
 
         public IPEndPoint RemoteIPEndPoint { get; set; }
 
-        internal override RpcMsg NewMsg()
+        internal override RpcJobMsg NewMsg()
         {
             Log.Debug("");
-            RemoteRpcMsg rpcMsg = new RemoteRpcMsg();
+            RemoteRpcJobMsg rpcMsg = new RemoteRpcJobMsg();
             rpcMsg.DestAppId = (byte)WorkerJobID.OutputNetwork;
-            rpcMsg.ForwardType = RemoteRpcMsg.ForwardEnum.Output;
+            rpcMsg.ForwardType = RemoteRpcJobMsg.ForwardEnum.Output;
             rpcMsg.RealDestAppId = DestAppId;
             rpcMsg.RemoteIPEndPoint = RemoteIPEndPoint;
             //可能是Task Thread访问的

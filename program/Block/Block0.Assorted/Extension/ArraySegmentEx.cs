@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Block0.Net
+namespace Block.Assorted
 {
     public static class ArraySegmentEx
     {

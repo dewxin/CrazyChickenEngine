@@ -11,6 +11,7 @@ using GameServerBase.ServerWorld;
 using Engine.Common.Unit;
 using Engine.IService;
 using Engine.Common.ServiceEurekaGlobal;
+using Engine.Common.AppCommon;
 
 namespace Server.Game._ServerGetter
 {
@@ -23,6 +24,7 @@ namespace Server.Game._ServerGetter
             var hasGlobalEurekaService = GetApplicationList().Any(service => service is GlobalEurekaApplication);
             return new HostNode()
             {
+                Name = "EurekaMaster",
                 IsGlobalEureka = hasGlobalEurekaService,
             };
         }
@@ -41,6 +43,7 @@ namespace Server.Game._ServerGetter
         {
             return new List<HostApplication>()
             {
+                new CommonApplication(),
                 new GlobalEurekaApplication(),
                 new NodeEurekaApplication(),
                 new LoginApplication(),

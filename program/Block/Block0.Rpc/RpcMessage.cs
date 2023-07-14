@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Block0.Rpc.Serialize;
+using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Block0.Net.Serialize;
+using Block.Assorted;
 
-namespace Block0.Net
+namespace Block0.Rpc
 {
     [Flags]
     public enum HeaderBit:byte
@@ -18,8 +19,8 @@ namespace Block0.Net
     }
 
 
-    //[header:byte][serviceId:byte][taskID:opt:ushort][methodID:opt:ushort][methodParamBytes:opt:n bytes]
-    public class NetMessage
+    //[header:byte][srcAppId:byte][dstAppId:byte][taskID:opt:ushort][methodID:opt:ushort][methodParamBytes:opt:n bytes]
+    public class RpcMessage
     {
         /// <see cref="HeaderBit"/>
         private byte headerFlag = 0;
@@ -33,9 +34,9 @@ namespace Block0.Net
         public IPEndPoint ipEndPoint { get; set; }
 
 
-        public NetMessage() { }
+        public RpcMessage() { }
 
-        public NetMessage(byte sourceAppId, byte destAppId, ushort methodId = 0, ushort methodCallTaskId = 0, bool isReply = false)
+        public RpcMessage(byte sourceAppId, byte destAppId, ushort methodId = 0, ushort methodCallTaskId = 0, bool isReply = false)
         {
             SourceAppId = sourceAppId;
             DestAppId = destAppId;
@@ -56,9 +57,9 @@ namespace Block0.Net
         }
 
 
-        public static NetMessage Parse(ArraySegment<byte> buffer)
+        public static RpcMessage Parse(ArraySegment<byte> buffer)
         {
-            var ret = new NetMessage();
+            var ret = new RpcMessage();
             ret.FlatBytesToMessage(buffer);
             return ret;
         }

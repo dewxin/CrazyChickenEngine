@@ -3,6 +3,7 @@ using Block.RPC.Task;
 using Block0.Net;
 using Block0.Threading.Worker;
 using Block1.LocatableRPC;
+using Block1.LocatableRPC.Job;
 using Block1.LocatableRPC.RpcInvoker;
 using Microsoft.CodeAnalysis;
 using System;

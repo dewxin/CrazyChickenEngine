@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Block.Assorted.Logging;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace Block0.Net
 {
@@ -17,11 +18,13 @@ namespace Block0.Net
         public static void Send(byte[] bytes, IPEndPoint ipEndPoint)
         {
             //远程主机可能会关闭连接，异常会在接收时抛出
-            //TODO 发送套接字和接受套接字要不要拆开
-            UdpClient.Send(bytes, bytes.Length, ipEndPoint);
+            int sent = UdpClient.Send(bytes, bytes.Length, ipEndPoint);
+			//TODO 如果不相等踢掉几个流量异常大的客户端。
+            Debug.Assert(sent == bytes.Length);
         }
     }
 
+    //TODO 新来一个客户端，就创建一个新的UdpClient?。这样客户端之间不会相互影响。
     public partial class UdpSocketManager
     {
         public static int ListenPort { get; private set; }
@@ -48,21 +51,22 @@ namespace Block0.Net
             }
         }
 
-        public static bool TryGetMessage(out NetMessage netMessage, out IPEndPoint remoteEndPoint)
+        public static bool TryGetMessage(out ArraySegment<byte> netMessage, out IPEndPoint remoteEndPoint)
         {
-            netMessage = null;
+            netMessage = default;
             remoteEndPoint = point;
 
             try
             {
                 if (UdpClient.Client.Available == 0)
+                {
                     return false;
+                }
 
                 byte[] bytes = UdpClient.Receive(ref remoteEndPoint);
                 Log.Debug($"Received Data lenth:{bytes.Length}");
 
-                //TODO 如果同时到两个数据包 会出bug
-                netMessage = NetMessage.Parse(new ArraySegment<byte>(bytes));
+                netMessage = new ArraySegment<byte>(bytes);
                 return true;
             }
             catch (SocketException e)

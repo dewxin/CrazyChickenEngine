@@ -13,8 +13,9 @@ namespace AutoSerializer
     {
         public static string GetReaderCodebyType(Type type)
         {
-
-            if (type == typeof(byte))
+            if (type == typeof(bool))
+                return "reader.ReadBoolean()";
+            else if (type == typeof(byte))
                 return "reader.ReadByte()";
             else if (type == typeof(short))
                 return "reader.ReadInt16()";
@@ -44,7 +45,9 @@ namespace AutoSerializer
 
         public static bool IsPrimitive(Type type)
         {
-            if (type == typeof(byte))
+            if (type == typeof(bool))
+                return true;
+            else if (type == typeof(byte))
                 return true;
             else if (type == typeof(short))
                 return true;
@@ -137,12 +140,11 @@ namespace AutoSerializer
             throw new NotSupportedException(name);
         }
 
-        public static bool IsTransparent(Type type)
+        public static bool Is<TAttribute>(Type type)
+            where TAttribute : Attribute
         {
-            return type.GetCustomAttribute<TransparentAttribute>() != null; 
+            return type.GetCustomAttribute<TAttribute>() != null;
         }
-
-
 
     }
 }

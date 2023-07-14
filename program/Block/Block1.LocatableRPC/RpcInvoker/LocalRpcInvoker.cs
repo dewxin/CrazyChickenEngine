@@ -25,16 +25,18 @@ namespace Block1.LocatableRPC.RpcInvoker
             this.CallTaskCenter= methodCallTaskCenter;
         }
 
-        internal virtual RpcMsg NewMsg()
+        internal virtual RpcJobMsg NewMsg()
         {
             Log.Debug("");
-            RpcMsg localRpcMsg = new RpcMsg();
+            RpcJobMsg localRpcMsg = new RpcJobMsg();
             localRpcMsg.DestAppId = DestAppId;
             //可能是Task Thread访问的
 
             //TODO 这里做下DEBUG 校验 如果函数调用是需要返回值的并且 没有找不到当前服务ID， 那么抛个异常
             if (ThreadLocal.WorkerJob.IsValueCreated)
                 localRpcMsg.SourceAppId = ThreadLocal.WorkerJob.Value.JobID;
+            else
+                Log.Warn("cannot find source jobId");
             return localRpcMsg;
         }
 
@@ -43,7 +45,7 @@ namespace Block1.LocatableRPC.RpcInvoker
         {
             var methodCallTask = MethodCallTask<TRet>.Start(methodId, CallTaskCenter);
 
-            RpcMsg localRpcMsg = NewMsg();
+            RpcJobMsg localRpcMsg = NewMsg();
             {
                 localRpcMsg.MethodId = methodId;
                 localRpcMsg.MethodCallTaskId = methodCallTask.TaskId;
@@ -57,7 +59,7 @@ namespace Block1.LocatableRPC.RpcInvoker
 
         public void SendRequestParamObjRetVoid<TParam>(ushort methodId, TParam param)
         {
-            RpcMsg threadMsg = NewMsg();
+            RpcJobMsg threadMsg = NewMsg();
             {
                 threadMsg.MethodId = methodId;
                 threadMsg.MethodParam = param;
@@ -71,7 +73,7 @@ namespace Block1.LocatableRPC.RpcInvoker
         {
             var methodCallTask = MethodCallTask<TRet>.Start(methodId, CallTaskCenter);
 
-            RpcMsg threadMsg = NewMsg();
+            RpcJobMsg threadMsg = NewMsg();
             {
                 threadMsg.MethodId = methodId;
                 threadMsg.MethodCallTaskId = methodCallTask.TaskId;
@@ -84,7 +86,7 @@ namespace Block1.LocatableRPC.RpcInvoker
 
         public void SendRequestParamVoidRetVoid(ushort methodId)
         {
-            RpcMsg threadMsg = NewMsg();
+            RpcJobMsg threadMsg = NewMsg();
             {
                 threadMsg.MethodId = methodId;
             }
@@ -94,7 +96,7 @@ namespace Block1.LocatableRPC.RpcInvoker
 
         public void SendResponse(object ret, ushort taskId)
         {
-            RpcMsg threadMsg = NewMsg();
+            RpcJobMsg threadMsg = NewMsg();
             {
                 threadMsg.MethodCallTaskId = taskId;
                 threadMsg.IsMethodCallDoneReply = true;

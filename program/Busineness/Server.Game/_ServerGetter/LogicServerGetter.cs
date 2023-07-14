@@ -17,7 +17,10 @@ namespace Server.Game._ServerGetter
 
         public HostNode GetServer()
         {
-            return new HostNode();
+            return new HostNode()
+            {
+                Name = "Logic",
+            };
         }
 
         public SocketConfig GetSocketConfig()
