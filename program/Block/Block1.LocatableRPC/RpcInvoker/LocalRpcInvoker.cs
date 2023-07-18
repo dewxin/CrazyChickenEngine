@@ -52,7 +52,7 @@ namespace Block1.LocatableRPC.RpcInvoker
                 localRpcMsg.MethodParam = param;
             }
 
-            WorkerJob.SendMsgToJob(localRpcMsg);
+            MsgWorkerJob.SendMsgToJob(localRpcMsg);
 
             return methodCallTask;
         }
@@ -65,7 +65,7 @@ namespace Block1.LocatableRPC.RpcInvoker
                 threadMsg.MethodParam = param;
             }
 
-            WorkerJob.SendMsgToJob(threadMsg);
+            MsgWorkerJob.SendMsgToJob(threadMsg);
         }
 
         public MethodCallTask<TRet> SendRequestParamVoidRetObj<TRet>(ushort methodId)
@@ -79,7 +79,7 @@ namespace Block1.LocatableRPC.RpcInvoker
                 threadMsg.MethodCallTaskId = methodCallTask.TaskId;
             }
 
-            WorkerJob.SendMsgToJob(threadMsg);
+            MsgWorkerJob.SendMsgToJob(threadMsg);
 
             return methodCallTask;
         }
@@ -91,7 +91,7 @@ namespace Block1.LocatableRPC.RpcInvoker
                 threadMsg.MethodId = methodId;
             }
 
-            WorkerJob.SendMsgToJob(threadMsg);
+            MsgWorkerJob.SendMsgToJob(threadMsg);
         }
 
         public void SendResponse(object ret, ushort taskId)
@@ -103,7 +103,7 @@ namespace Block1.LocatableRPC.RpcInvoker
                 threadMsg.MethodParam = ret;
             }
 
-            WorkerJob.SendMsgToJob(threadMsg);
+            MsgWorkerJob.SendMsgToJob(threadMsg);
         }
     }
 

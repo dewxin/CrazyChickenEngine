@@ -55,10 +55,13 @@ namespace Block0.Threading.Worker
 
         }
 
-        public static void HintJobCount(int count)
+        public static void HintJobCount(float count)
         {
             if(count > 0)
             {
+                //TODO这边启动会有延迟，
+                //从set到有worker去工作存在一定的interval
+                //interval期间导致会多次set，导致超额的worker过来
                 WorkerHireEvent.Set();
             }
         }
@@ -68,6 +71,9 @@ namespace Block0.Threading.Worker
             if (worker.Sentinel)
                 return;
 
+            //TODO
+            //除了这里wait中的worker，还有一些worker的线程会因为Thread.Yield放弃CPU资源。
+            //导致 并不是所有的job都有一个worker在为其服务。
             Interlocked.Increment(ref waitWorkerCount);
             WorkerHireEvent.WaitOne();
             worker.IdleRate = 0;

@@ -92,7 +92,7 @@ namespace Block0.Threading.Worker
 
                 byte idleCount = 1;
 
-                while (WorkerJobManager.GetUrgentJobAndCount(out var workerJob, out int count) 
+                while (WorkerJobManager.GetUrgentJobAndCount(out var workerJob, out float count) 
                     /*TODO 并且剩余时间片的估算值能够处理此次task*/)
                 {
                     var prevWorker = Interlocked.CompareExchange(ref workerJob.CurrentWorker, this, null);
@@ -101,8 +101,7 @@ namespace Block0.Threading.Worker
                     if (prevWorker != null)
                         continue;
 
-                    if (count > 1)
-                        WorkerManager.HintJobCount(count - 1);
+                    WorkerManager.HintJobCount(count - 1);
 
 
                     CurrentJob = workerJob;

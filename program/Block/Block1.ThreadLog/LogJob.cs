@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Block.Assorted.Logging;
+using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
 
 namespace Block1.ThreadLog
@@ -11,7 +12,7 @@ namespace Block1.ThreadLog
     /// <summary>
     /// 先获得原有的log implementation，再用这里LogJob在新线程上代理原有的日志调用。
     /// </summary>
-    public class LogJob : WorkerJob, IUniqueJobID
+    public class LogJob : MsgWorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.Log;
 
@@ -28,43 +29,35 @@ namespace Block1.ThreadLog
             global::Block.Assorted.Logging.Log.Init(new ThreadLogImpl());
         }
 
-        public override void Execute()
+        public override void ExecuteOneMsg(JobMsg jobMsg)
         {
-            HandlePipeMsg();
-
-        }
-
-        public void HandlePipeMsg()
-        {
-            while (TryGetMsg(out var item))
+            if (jobMsg.MethodParam is LogMsg logItem)
             {
-                if (item.MethodParam is LogMsg logItem)
+                switch (logItem.LogLevel)
                 {
-                    switch (logItem.LogLevel)
-                    {
-                        case LogLevel.Debug:
-                            log.Debug(logItem.Message, logItem.CallerInfo);
-                            break;
+                    case LogLevel.Debug:
+                        log.Debug(logItem.Message, logItem.CallerInfo);
+                        break;
 
-                        case LogLevel.Info:
-                            log.Info(logItem.Message, logItem.CallerInfo);
-                            break;
+                    case LogLevel.Info:
+                        log.Info(logItem.Message, logItem.CallerInfo);
+                        break;
 
-                        case LogLevel.Warn:
-                            log.Warn(logItem.Message, logItem.CallerInfo);
-                            break;
+                    case LogLevel.Warn:
+                        log.Warn(logItem.Message, logItem.CallerInfo);
+                        break;
 
-                        case LogLevel.Error:
-                            log.Error(logItem.Message, logItem.CallerInfo);
-                            break;
+                    case LogLevel.Error:
+                        log.Error(logItem.Message, logItem.CallerInfo);
+                        break;
 
-                        case LogLevel.Fatal:
-                            log.Fatal(logItem.Message, logItem.CallerInfo);
-                            break;
-                    }
-
+                    case LogLevel.Fatal:
+                        log.Fatal(logItem.Message, logItem.CallerInfo);
+                        break;
                 }
+
             }
         }
+
     }
 }

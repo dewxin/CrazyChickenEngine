@@ -20,6 +20,8 @@ namespace Block0.Threading.Worker
 
         public static int ManagedJobCount => id2ManagedJobDict.Count;
 
+        public static volatile float EstimatedJobCount;
+
         public static WorkerJob GetJob(ushort id)
         {
             if(id2ManagedJobDict.TryGetValue(id, out var managedJob))
@@ -48,9 +50,9 @@ namespace Block0.Threading.Worker
                 id2ManagedJobDict.Add(workerJob.JobID, workerJob);
         }
 
-        public static bool GetUrgentJobAndCount(out WorkerJob workerJob, out int count)
+        public static bool GetUrgentJobAndCount(out WorkerJob workerJob, out float totalCount)
         {
-            count = 0;
+            totalCount = 0;
             int maxPriority = 0;
             workerJob = null;
             foreach(var job in id2ManagedJobDict.Values)
@@ -58,12 +60,16 @@ namespace Block0.Threading.Worker
                 if (job.CurrentWorker != null)
                     continue;
 
-                if(job.ExecutePriority > 0)
-                    count++;
-                if (job.ExecutePriority > maxPriority)
-                    workerJob = job;
-            }
 
+                float count = Math.Min(1f, job.EstimatedTimeCost / WorkerJob.ExpectedTimeCostPerWorker);
+                totalCount += count;
+                if (job.ExecutePriority > maxPriority)
+                {
+                    maxPriority = job.ExecutePriority;
+                    workerJob = job;
+                }
+            }
+            EstimatedJobCount = totalCount;
             return workerJob != null;
         }
 

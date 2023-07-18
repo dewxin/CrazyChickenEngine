@@ -9,7 +9,7 @@ float counter1 = 0f;
 while (true)
 {
     publisher.Share(nameof(counter1), counter1);
-    counter1 += 1;
+    counter1 += 1.01f;
 
     Thread.Sleep(100);
 }

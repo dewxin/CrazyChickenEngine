@@ -29,7 +29,7 @@ namespace Block1.ThreadLog
                 CallerInfo = callerInfo
             };
 
-            WorkerJob.SendMsgToJob((byte)WorkerJobID.Log, pipeItem);
+            MsgWorkerJob.SendMsgToJob((byte)WorkerJobID.Log, pipeItem);
         }
 
         public void Debug(string message, CallerInfo invokerInfo)

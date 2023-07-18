@@ -1,6 +1,7 @@
 ﻿using Block0.Threading.Pipe;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,7 +23,7 @@ namespace Block0.Threading.Worker
 
     public class ThreadLocal
     {
-        public static ThreadLocal<WorkerJob> WorkerJob { get; set; } = new ThreadLocal<WorkerJob>();
+        public static ThreadLocal<MsgWorkerJob> WorkerJob { get; set; } = new ThreadLocal<MsgWorkerJob>();
     }
 
     public abstract class WorkerJob
@@ -30,72 +31,22 @@ namespace Block0.Threading.Worker
         //0表示 没有初始ID
         public byte JobID { get; internal set; }
         
-        public JobMsg CurrentMsg { get; private set; }
+        public abstract int ExecutePriority { get; }
+        public abstract float EstimatedTimeCost { get; } //ms
 
-        public virtual int ExecutePriority => ReceivingPipe.Count;
+        public const float ExpectedTimeCostPerWorker = 10f;//10ms
 
-        internal Many4OnePipe<JobMsg> ReceivingPipe { get; private set; } = new Many4OnePipe<JobMsg>();
         public volatile Worker CurrentWorker;
 
         public virtual void Awake()
         {
-            ThreadLocal.WorkerJob.Value = this;
         }
 
         public virtual void Start()
         {
 
         }
-
-        public virtual void Execute()
-        {
-            ThreadLocal.WorkerJob.Value = this;
-
-        }
-
-        public bool TryGetMsg(out JobMsg jobMsg)
-        {
-            var result = ReceivingPipe.TryDequeue(out jobMsg);
-            CurrentMsg = jobMsg;
-            return result;
-        }
-
-
-        public static void SendMsgToJob(JobMsg msg)
-        {
-#if DEBUG
-            TryAttachStackInfo2Msg(msg);
-#endif
-
-            var job = WorkerJobManager.GetJob(msg.DestJobId);
-            job.ReceivingPipe.SpinEnqueue(msg);
-
-
-            if(job.CurrentWorker==null)
-                WorkerManager.HintJobCount(1);
-        }
-
-        private static void TryAttachStackInfo2Msg(JobMsg msg)
-        {
-            if (!ThreadLocal.WorkerJob.IsValueCreated)
-                return;
-
-            var workerJob = ThreadLocal.WorkerJob.Value;
-            var stackInfo = workerJob.CurrentMsg?.StackInfo;
-
-            var newInfo = StackInfo.CreateNew(stackInfo, workerJob.GetType().Name);
-            msg.StackInfo = newInfo;
-        }
-
-
-        public static void SendMsgToJob(byte jobId, object methodParam)
-        {
-            JobMsg jobMsg = new JobMsg();
-            jobMsg.DestJobId = jobId;
-            jobMsg.MethodParam = methodParam;
-
-            SendMsgToJob(jobMsg);
-        }
+        public abstract void Execute();
 
     }
 

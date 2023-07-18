@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Block1.LocatableRPC.Job
 {
-    public abstract class LpcAppJob : WorkerJob
+    public abstract class LpcAppJob : MsgWorkerJob
     {
         private ServiceHandlerList serviceHandlerList = new ServiceHandlerList();
 
@@ -35,34 +35,25 @@ namespace Block1.LocatableRPC.Job
             base.Awake();
         }
 
-        public virtual void Update()
+
+
+
+        public override void ExecuteOneMsg(JobMsg jobMsg)
         {
-
-        }
-
-        public override void Execute()
-        {
-            base.Execute();
-            Update();
-
-            while (TryGetMsg(out JobMsg item))
+            var rpcMsg = jobMsg as RpcJobMsg;
+            if (rpcMsg == null)
             {
-                var rpcMsg = item as RpcJobMsg;
-                if (rpcMsg == null)
-                {
-                    //TODO 记录一下未能处理的异常
-                    continue;
-                }
-
-
-                var retVal = HandleMessage(rpcMsg);
-                //没有返回值 不需要处理
-                if (retVal != null)
-                    SendResponse(rpcMsg, retVal);
-
-                AfterHandleMessage();
-
+                //TODO 记录一下未能处理的异常
+                return;
             }
+
+            var retVal = HandleMessage(rpcMsg);
+            //没有返回值 不需要处理
+            if (retVal != null)
+                SendResponse(rpcMsg, retVal);
+
+            AfterHandleMessage();
+
         }
 
 

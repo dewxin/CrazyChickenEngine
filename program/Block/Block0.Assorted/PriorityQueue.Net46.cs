@@ -6,7 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Block0.Threading
+#if NET6_0_OR_GREATER
+#else
+namespace System.Collections.Generic
 {
     public class PriorityQueue<TElement, TPriority>
     {
@@ -454,3 +456,5 @@ namespace Block0.Threading
         }
     }
 }
+
+#endif

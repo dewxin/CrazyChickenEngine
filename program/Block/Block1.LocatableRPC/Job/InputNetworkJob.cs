@@ -3,6 +3,7 @@ using Block.RPC.Emitter;
 using Block0.Net;
 using Block0.Rpc;
 using Block0.Rpc.Serialize;
+using Block0.Threading.Pipe;
 using Block0.Threading.Worker;
 using System;
 using System.Net;
@@ -13,6 +14,8 @@ namespace Block1.LocatableRPC.Job
     {
         public byte UniqueID => (byte)WorkerJobID.InputNetwork;
         public override int ExecutePriority => UdpSocketManager.AvailableData;
+
+        public override float EstimatedTimeCost => WorkerJob.ExpectedTimeCostPerWorker;
 
         public override void Start()
         {
@@ -28,6 +31,7 @@ namespace Block1.LocatableRPC.Job
                 OnReceiveNetMessage(netMessage, iPEndPoint);
             }
         }
+
 
 
         //来自网络的数据包，转发到对应的服务
@@ -64,9 +68,8 @@ namespace Block1.LocatableRPC.Job
             }
 
 
-            SendMsgToJob(remoteRpcMsg);
+            MsgWorkerJob.SendMsgToJob(remoteRpcMsg);
         }
-
 
 
     }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Block1.LocatableRPC.Job
 {
-    internal class OutputNetworkJob : WorkerJob, IUniqueJobID
+    internal class OutputNetworkJob : MsgWorkerJob, IUniqueJobID
     {
         public byte UniqueID => (byte)WorkerJobID.OutputNetwork;
 
@@ -24,26 +24,21 @@ namespace Block1.LocatableRPC.Job
             Log.Debug("");
         }
 
-        public override void Execute()
+        public override void ExecuteOneMsg(JobMsg item)
         {
-            while (TryGetMsg(out JobMsg item))
+            var rpcMsg = item as RemoteRpcJobMsg;
+            if (rpcMsg == null)
             {
+                Log.Warn($"msg is not Remote: srcJob{item.SourceJobId} destJob{item.DestJobId}");
+                //记录一下未能处理的exception
+                return;
+            }
 
-                var rpcMsg = item as RemoteRpcJobMsg;
-                if (rpcMsg == null)
-                {
-                    Log.Warn($"msg is not Remote: srcJob{item.SourceJobId} destJob{item.DestJobId}");
-                    //记录一下未能处理的exception
-                    continue;
-                }
+            rpcMsg.DestAppId = rpcMsg.RealDestAppId;
 
-                rpcMsg.DestAppId = rpcMsg.RealDestAppId;
-
-                if(rpcMsg.ForwardType == RemoteRpcJobMsg.ForwardEnum.Output)
-                {
-                    ForwardOutputMsg(rpcMsg);
-                }
-
+            if(rpcMsg.ForwardType == RemoteRpcJobMsg.ForwardEnum.Output)
+            {
+                ForwardOutputMsg(rpcMsg);
             }
         }
 
