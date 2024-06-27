@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConfigTool
 {
-    internal class Bootstrap
+    public class Bootstrap
     {
 
         public void Start(string[] args)
@@ -28,8 +28,6 @@ namespace ConfigTool
 
             if (!argsDict.ContainsKey("-input") ||
             (!argsDict.ContainsKey("-cs")
-            && !argsDict.ContainsKey("-update")
-            && !argsDict.ContainsKey("-init")
             ))
             {
                 Console.WriteLine("Options error: keymap");
@@ -38,7 +36,7 @@ namespace ConfigTool
             }
 
 
-            DoWork(argsDict);
+            DoWork(argsDict["-input"], argsDict["-cs"]);
         }
 
         private Dictionary<string,string> ParseArgDict(string[] args)
@@ -83,24 +81,6 @@ namespace ConfigTool
                         }
                         break;
 
-                    //文件
-                    case "-update":
-                    case "-init":
-                        {
-                            string path = Path.Combine(Environment.CurrentDirectory, optionValue);
-                            if (File.Exists(path))
-                            {
-                                argDict.Add(optionName, Path.GetFullPath(path));
-                                Console.WriteLine("Options: " + optionName + " , " + path);
-                            }
-                            else
-                            {
-                                Console.WriteLine("check path error key: " + optionName + " , path: " + path);
-                                return null;
-                            }
-
-                        }
-                        break;
                 }
             }
 
@@ -111,35 +91,18 @@ namespace ConfigTool
 
         void ShowOptions()
         {
-            //todo 后面再改下描述
             Console.WriteLine("ConfigTool Options:");
             Console.WriteLine("-input=<path>            input *.xls/*.xlsx from <path>.");
-            Console.WriteLine("-update=<file>           update data to mysql.");
-            Console.WriteLine("-init=<file>             only insert data to mysql.");
             Console.WriteLine("-cs=<path>               build cs file to <path>.");
         }
         
 
-        void DoWork(Dictionary<string,string> argDict)
+        public static void DoWork(string inputExcelDir, string outputCodeDir)
         {
-            var inputFiles = Directory.EnumerateFiles(argDict["-input"], "*.xls*", SearchOption.TopDirectoryOnly);
-            if (argDict.ContainsKey("-cs"))
-            {
-                //CSharpGen gb = new CSharpGen();
-                var gb = new CSharpGenNew();
-                gb.StartGenerate(inputFiles, argDict["-cs"]);
-            }
-            //else if (argDict.ContainsKey("-update"))
-            //{
-            //    UpdateHelper gb = new UpdateHelper();
-            //    gb.Update = true;
-            //    gb.StartBuild(files, argDict["-update"]);
-            //}
-            else if (argDict.ContainsKey("-init"))
-            {
-                MySqlGen gb = new MySqlGen();
-                gb.StartGenerate(inputFiles, argDict["-init"]);
-            }
+            var inputFiles = Directory.EnumerateFiles(inputExcelDir, "*.xls*", SearchOption.TopDirectoryOnly);
+
+            var gb = new CSharpGen();
+            gb.StartGenerate(inputFiles, outputCodeDir);
         }
     }
 }

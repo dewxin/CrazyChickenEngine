@@ -13,24 +13,32 @@ namespace ConfigTool
 
         static void Main(string[] args)
         {
+            Debug.Log += Console.WriteLine;
+            Debug.LogInfo += Console.WriteLine;
+            Debug.LogWarning += Console.WriteLine;
+            Debug.LogError += Console.WriteLine;
+
             //TestExcelHelper();
 
+
+
+            Start(args);
+        }
+
+        private static void Start(string[] args)
+        {
             Console.WriteLine("ConfigTool: Start...");
             Bootstrap bootStrap = new Bootstrap();
             bootStrap.Start(args);
 
             Console.WriteLine("ConfigTool: End...");
-
         }
 
         static void TestExcelHelper()
         {
-            var excelHelper = new ExcelReader();
+            var configTableList = ExcelReader.ReadTablesFromFile("MonsterConfig.xlsx");
 
-            var dataTable = excelHelper.NpoiLoadExcel("com_item_info.xlsx");
 
-            if(dataTable != null)
-                Console.WriteLine(dataTable.Rows.Count);
         }
     }
 }

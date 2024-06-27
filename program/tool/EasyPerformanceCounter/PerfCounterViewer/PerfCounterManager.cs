@@ -13,6 +13,7 @@ namespace PerfCounterViewer
 
         public bool UpdateDomain()
         {
+            //TODO 这里可能有打开过domain，但是后面关闭了，没有及时更新信息。
             var subscriber = PerfCounter.DefaultDomainSub;
             bool result =subscriber.FetchAllCounterNames(out var nameGroup);
 

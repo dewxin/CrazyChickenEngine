@@ -1,27 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+
+    <OutputType>Library</OutputType>
+	  <TargetFrameworks>net471;net6.0;</TargetFrameworks>
     <AssemblyName>ConfigTool</AssemblyName>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-	<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <RootNamespace>ConfigTool</RootNamespace>
-    <IsPublishable>False</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Template\RefClassCollection.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="MonsterConfig.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template\RefClassCollection.cs" />
     <EmbeddedResource Include="Template\_TemplateClass_.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NPOI" Version="2.5.5" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\config\core_tool\</OutputPath>
-    <DefineConstants>TRACE;NETSTANDARD</DefineConstants>
-  </PropertyGroup>
   
 </Project>

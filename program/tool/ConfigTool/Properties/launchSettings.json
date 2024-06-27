@@ -1,9 +1,8 @@
 {
   "profiles": {
-    "ConfigTool_core": {
+    "ConfigTool": {
       "commandName": "Project",
-      "commandLineArgs": "-input=Server -cs=..\\share\\SqlDataCommon",
-      "workingDirectory": "D:\\Code\\_Work\\Demo\\CSharpServerDemo\\ServerDemo\\program\\config"
+      "commandLineArgs": "-input=excel  -cs=autoConfig"
     }
   }
 }
