@@ -13,7 +13,9 @@ namespace ConfigTool.ConfigInfo
 
         public const string TableMarker = "<Table>";
         public const string TableName = "Name";
+        public const string TableNameSpace = "NameSpace";
         public const string TableRefClassFile = "RefClass";
+        public const string KeyValueTable = "KVTable";
 
 
         public const string RecordColumnName = "name";
@@ -21,6 +23,7 @@ namespace ConfigTool.ConfigInfo
         public const string RecordColumnType = "type";
         public const string RecordColumnTypeAbbr = "t";
         public const string RecordColumnKey = "key";
+        public const string RecordColumnGetter = "getter";
         public const string RecordColumnKeyGenerateEnum = "keyGenerateEnum";
         public const string RecordColumnImportData = "import";
     }

@@ -1,5 +1,4 @@
-﻿using ConfigTool.ConfigInfo;
-using AutoConfig;
+﻿using AutoConfig;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NPOI.Util;
 using System.ComponentModel;
+using ConfigTool.ConfigInfo;
 
 namespace ConfigTool.Gen
 {
@@ -26,12 +26,21 @@ namespace ConfigTool.Gen
 
         void GenerateConfigTableFile(ConfigTable configTable, string outPath)
         {
-            string filestr = GenerateConfigTableFileContent(configTable);
+            string fileStr = string.Empty;
+            if (configTable.IsKVTable)
+            {
+                fileStr = GenerateKVTableFileContent(configTable);
+            }
+            else
+            {
+
+                fileStr = GenerateConfigTableFileContent(configTable);
+            }
 
 
             string filename = configTable.Name + ".cs";
             string filepath = Path.Combine(outPath, filename);
-            File.WriteAllText(filepath, filestr, Encoding.UTF8);
+            File.WriteAllText(filepath, fileStr, Encoding.UTF8);
             Console.WriteLine("BuildFile: " + filepath);
         }
 
@@ -77,10 +86,10 @@ namespace ConfigTool.Gen
         }
 
 
-        private List<string> ConfigTableHandleOneLineExpand(ConfigTable configTable, string line, StreamReader streamReader)
+        private List<string> ConfigTableHandleOneLineExpand(ConfigTable configTable, string lineContainIF, StreamReader streamReader)
         {
             List<string> lineList = new List<string>();
-            if (line.Contains("_ClassField_"))
+            if (lineContainIF.Contains("_ClassField_"))
             {
                 var lines = ReadUntilEndIf(streamReader);
 
@@ -89,7 +98,7 @@ namespace ConfigTool.Gen
 
                     foreach (var l in lines)
                     {
-                        var innerLine = l.Replace("_Comment_", configField.Desc)
+                        var innerLine = l.Replace("_Comment_", configField.Comment)
                                         .Replace("_FieldType_", ConvertType(configField.Type))
                                         .Replace("_FieldName_", configField.Name);
 
@@ -98,7 +107,7 @@ namespace ConfigTool.Gen
                 }
             }
              
-            else if(line.Contains("_TableKeyEnum_") )
+            else if(lineContainIF.Contains("_TableKeyEnum_") )
             {
                 var lines = ReadUntilEndIf(streamReader);
 
@@ -129,7 +138,7 @@ namespace ConfigTool.Gen
 
             }
 
-            else if (line.Contains("_ExtField_"))
+            else if (lineContainIF.Contains("_ExtField_"))
             {
                 var lines = ReadUntilEndIf(streamReader);
 
@@ -139,13 +148,14 @@ namespace ConfigTool.Gen
                     {
                         var fieldLine = l.Replace("_FieldType_", ConvertType(configField.Type));
                         fieldLine = fieldLine.Replace("_FieldName_", configField.Name);
+                        fieldLine = fieldLine.Replace("_Comment_", configField.Comment);
                         lineList.Add(fieldLine);
                     }
                 }
             }
 
 
-            else if (line.Contains("_ExtTable_"))
+            else if (lineContainIF.Contains("_ExtTable_"))
             {
                 foreach (var l in ReadUntilEndIf(streamReader))
                 {
@@ -157,7 +167,22 @@ namespace ConfigTool.Gen
                 }
             }
 
-            else if(line.Contains("_ExtTableData_"))
+            ///TODO 这里 <see cref="KVTableHandleOneLineExpand"/>也有一份对应的代码
+            else if (lineContainIF.Contains("_TableNameSpace_"))
+            {
+                var lines = ReadUntilEndIf(streamReader);
+
+                foreach (var nameSpace in configTable.NameSpaceList)
+                {
+                    foreach (var l in lines)
+                    {
+                        var fieldLine = l.Replace("__TableNameSpaceContent_", nameSpace);
+                        lineList.Add(fieldLine);
+                    }
+                }
+            }
+
+            else if(lineContainIF.Contains("_ExtTableData_"))
             {
                 int index = 0;
 
@@ -218,77 +243,4 @@ namespace ConfigTool.Gen
     }
 
 
-    internal class TableInitDataDecorator : IDisposable
-    {
-        private string type;
-        private StringBuilder stringBuilder;
-        public TableInitDataDecorator(string type, StringBuilder stringBuilder) 
-        {
-            this.type = type;
-            this.stringBuilder = stringBuilder;
-
-            Init();
-        }
-
-        private void Init()
-        {
-            if (IsContainerType(type))
-            {
-                stringBuilder.Append("new ").Append(type).Append("(){");
-            }
-
-            if(IsText(type))
-            {
-                stringBuilder.Append("\"");
-            }
-
-
-        }
-
-        public void Dispose()
-        {
-            if (IsContainerType(type))
-                stringBuilder.Append("}");
-
-            if(IsText(type))
-            {
-                stringBuilder.Append("\"");
-            }
-
-            if(IsFloat(type))
-            {
-                stringBuilder.Append("f");
-            }
-
-        }
-
-
-
-
-        private bool IsContainerType(string type)
-        {
-            if (type.Contains("List"))
-                return true;
-
-            return false;
-
-        }
-
-        private bool IsText(string type)
-        {
-            if (type.ToLower().Equals("string"))
-                return true;
-
-            return false;
-        }
-
-        private bool IsFloat(string type)
-        {
-            if (type.ToLower().Equals("float") || type.ToLower().Equals("double"))
-                return true;
-
-            return false;
-        }
-
-    }
 }

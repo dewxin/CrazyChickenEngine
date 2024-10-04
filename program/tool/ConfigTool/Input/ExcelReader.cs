@@ -68,6 +68,9 @@ namespace ConfigTool
         {
             foreach (var sheet in sheetList)
             {
+                //需要无视一些sheet
+                if (sheet.SheetName.StartsWith("ignore"))
+                    continue;
 
                 ReadConfigTablesFrom1Sheet(sheet);
             }
@@ -82,7 +85,6 @@ namespace ConfigTool
             while(TryLocateTableHeader(sheet, rowIndex, out ICell tableHeaderCell))
             {
                 var configTable = ReadTable(tableHeaderCell);
-                Debug.Log($">>>>> Locate table {configTable.Name} In {fileName}.{sheet.SheetName} <<<<<");
                 configTable.SourceFile = absoluteFileName;
                 resultTableList.Add(configTable);
 
@@ -102,7 +104,7 @@ namespace ConfigTool
 
         }
 
-        private string GetDefaultValue(string type)
+        public static string GetDefaultValue(string type)
         {
             type = type.ToLower();
 
@@ -113,9 +115,25 @@ namespace ConfigTool
                 case "float":
                 case "double":
                     return "0";
+
+                case "string":
+                    return "";
             }
 
-            return "";
+
+            //enum ，直接赋值0默认值好像可以
+            if (type.EndsWith("enum"))
+                return "0";
+
+            ///<see cref=" ConfigTool.Gen.TableInitDataDecorator"/> 会再修改这里面的值
+            if (type.Contains("list"))
+            {
+                return "";
+            }
+
+
+            //不知道是什么类型，直接返回default
+            return "default";
         }
 
 

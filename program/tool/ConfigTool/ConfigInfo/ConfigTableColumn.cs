@@ -14,9 +14,10 @@ namespace ConfigTool.ConfigInfo
 
         public string Name { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
-        public string Desc { get; set; }
+        public string Comment { get; set; }
 
         public bool IsKey { get; set; }
+        public bool IsGetter { get; set; }
 
         public bool NeedKeyGenerateEnum { get; set; }
 
@@ -36,12 +37,12 @@ namespace ConfigTool.ConfigInfo
             if (IsKey)
                 result += $" IsKey={IsKey}";
 
-            if(NeedKeyGenerateEnum)
-                result += $" NeedKeyGenerateEnum={ NeedKeyGenerateEnum}";
+            if (NeedKeyGenerateEnum)
+                result += $" NeedKeyGenerateEnum={NeedKeyGenerateEnum}";
             if (NeedImportData)
                 result += $" NeedImportData={NeedImportData} ImportFile={ImportDataFile}";
 
-            return result ;
+            return result;
         }
 
     }

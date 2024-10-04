@@ -1,8 +1,10 @@
 ﻿using ConfigTool.ConfigInfo;
 using NPOI.SS.UserModel;
+using Org.BouncyCastle.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,8 +66,16 @@ namespace ConfigTool
 
             var configTable = new ConfigTable();
             ReadTableHeader(configTable, tableHeaderCell);
-            ReadTableColumn(configTable, tableHeaderCell.Sheet, tableHeaderCell.RowIndex + 2);
-            ReadTableRecords(configTable, tableHeaderCell.Sheet, tableHeaderCell.RowIndex + 3);
+            Debug.Log($">>>>> Locate table {configTable.Name} In {fileName}.{tableHeaderCell.Sheet.SheetName} <<<<<");
+            if(configTable.IsKVTable)
+            {
+                ReadKVTableRecords(configTable, tableHeaderCell.Sheet, tableHeaderCell.RowIndex + 3);
+            }
+            else
+            {
+                ReadTableColumn(configTable, tableHeaderCell.Sheet, tableHeaderCell.RowIndex + 2);
+                ReadTableRecords(configTable, tableHeaderCell.Sheet, tableHeaderCell.RowIndex + 3);
+            }
 
             return configTable;
         }
@@ -77,8 +87,18 @@ namespace ConfigTool
             var entryList = cellValue.Split(ConfigKeyWord.Seperator);
             foreach(var entry in entryList)
             {
+                bool tableEntryIsValid = false;
                 if (entry.Contains(ConfigKeyWord.TableMarker))
+                {
+                    tableEntryIsValid = true;
                     continue;
+                }
+                if (entry.Contains(ConfigKeyWord.KeyValueTable))
+                {
+                    tableEntryIsValid = true;
+                    configTable.IsKVTable = true;
+                    continue;
+                }
                 if (entry.Trim() == string.Empty)
                     continue;
 
@@ -93,18 +113,17 @@ namespace ConfigTool
                 string key = keyValue[0].Trim();
                 string value = keyValue[1].Trim();
 
-                if(key != ConfigKeyWord.TableName && key != ConfigKeyWord.TableRefClassFile)
-                {
-                    Debug.LogError($"{key} in {tableHeaderCell.Address} is not valid");
-                }
+
 
                 if(key == ConfigKeyWord.TableName)
                 {
+                    tableEntryIsValid = true;
                     configTable.Name = value;
                 }
 
                 if(key == ConfigKeyWord.TableRefClassFile)
                 {
+                    tableEntryIsValid = true;
                     var fileList = value.Split(',');
                     foreach(var file in fileList)
                     {
@@ -114,6 +133,26 @@ namespace ConfigTool
 
                         configTable.ReferenceClassFileList.Add(fileTrim);
                     }
+                }
+
+                if(key == ConfigKeyWord.TableNameSpace)
+                {
+                    tableEntryIsValid = true;
+                    var namespaceList = value.Split(',');
+                    foreach (var OneNameSpace in namespaceList)
+                    {
+                        var nameSpaceTrim = OneNameSpace.Trim();
+                        if (nameSpaceTrim == string.Empty)
+                            continue;
+
+                        configTable.NameSpaceList.Add(nameSpaceTrim);
+                    }
+                }
+
+
+                if (!tableEntryIsValid)
+                {
+                    Debug.LogError($"{key} in {tableHeaderCell.Address} is not valid");
                 }
 
             }
@@ -126,14 +165,16 @@ namespace ConfigTool
 
         }
 
-        private void ReadTableColumn(ConfigTable configTable,  ISheet sheet, int rowIndexStart)
+        private void ReadTableColumn(ConfigTable configTable, ISheet sheet, int rowIndexStart)
         {
             IRow row = sheet.GetRow(rowIndexStart);
+            IRow commentRow = sheet.GetRow(rowIndexStart-1);
 
 
             for (int i = row.FirstCellNum; i <= row.LastCellNum; ++i)
             {
                 var cell = row.GetCell(i);
+                var commentCell = commentRow.GetCell(i);
 
                 if (cell == null)
                     continue;
@@ -142,10 +183,13 @@ namespace ConfigTool
                 if (cellValue == null || cellValue.Trim() == string.Empty)
                     continue;
 
+                string commentValue = GetValue(commentCell);
+
                 var entryList = cellValue.Split(ConfigKeyWord.Seperator);
 
                 var configTableColumn = new ConfigTableField();
                 configTableColumn.ColumnIndex = i;
+                configTableColumn.Comment = commentValue;
                 configTableColumn.Table = configTable;
                 configTable.FieldList.Add(configTableColumn);
 
@@ -156,6 +200,12 @@ namespace ConfigTool
                     if (entryTrimed.Equals(ConfigKeyWord.RecordColumnKey))
                     {
                         configTableColumn.IsKey = true;
+                        continue;
+                    }
+
+                    if(entryTrimed.Equals(ConfigKeyWord.RecordColumnGetter))
+                    {
+                        configTableColumn.IsGetter = true;
                         continue;
                     }
 
@@ -229,6 +279,11 @@ namespace ConfigTool
                 }
                 var keyField = configTable.GetKeyField();
                 var keyCell = row.GetCell(keyField.ColumnIndex);
+                if (keyCell == null)
+                {
+                    //Debug.LogInfo($"Row {rowIndex} key cell is null, Stop Read Table Records");
+                    return;
+                }
                 var keyValue = GetValue(keyCell);
                 if (keyValue == string.Empty)
                 {
@@ -247,17 +302,23 @@ namespace ConfigTool
                     var cell = row.GetCell(columnindex);
 
 
-                    string cellValue = string.Empty; 
+                    string originValue = string.Empty; 
+                    string value = string.Empty; 
                     if(cell !=null)
-                        cellValue = GetValue(cell);
-                    if(cellValue == string.Empty)
-                        cellValue= GetDefaultValue(fieldInfo.Type);
+                        originValue = GetValue(cell);
+
+                    value = originValue;
+                    ///ImportDataFiled 会在 <see cref="Gen.CSharpGen.ImportFieldData"/> 里面再处理
+                    if (value == string.Empty && fieldInfo.NeedImportData==false)
+                        value= GetDefaultValue(fieldInfo.Type);
 
 
                     var recordColumn = new ConfigRecordFieldValue()
                     {
                         ColumnIndex = columnindex,
-                        Value = cellValue,
+                        Cell = cell,
+                        Value= value,
+                        OriginValue = originValue,
                     };
                     record.RecordFieldList.Add(recordColumn);
 
@@ -265,6 +326,87 @@ namespace ConfigTool
             }
 
 
+        }
+
+
+        public void ReadKVTableRecords(ConfigTable configTable, ISheet sheet, int rowIndexStart)
+        {
+            for (int rowIndex = rowIndexStart; rowIndex <= sheet.LastRowNum; ++rowIndex)
+            {
+                IRow row = sheet.GetRow(rowIndex);
+
+                if (row == null)
+                {
+                    //Debug.LogInfo($"Row {rowIndex} is empty, Stop Read Table Records");
+                    return;
+                }
+
+                if (row.FirstCellNum < 0 || row.LastCellNum < 0)
+                {
+                    //Debug.LogInfo($"Row {rowIndex} is empty, Stop Read Table Records");
+                    return;
+                }
+
+                //0 是注释
+                var commentCell = row.GetCell(0);
+                string commentValue = string.Empty;
+                if (commentCell != null)
+                {
+                    commentValue = GetValue(commentCell);
+                }
+
+                //1是字段类型
+                var typeCell = row.GetCell(1);
+                string typeValue = string.Empty;
+                if (typeCell != null)
+                {
+                    typeValue = GetValue(typeCell);
+                    if (string.IsNullOrEmpty(typeValue))
+                    {
+                        continue;
+                    }
+                }
+
+                //2是字段名
+                var nameCell = row.GetCell(2);
+                string nameValue = string.Empty;
+                if (nameCell != null)
+                {
+                    nameValue = GetValue(nameCell);
+                    if (string.IsNullOrEmpty(typeValue))
+                    {
+                        continue;
+                    }
+                }
+
+                //3是字段值
+                var valueCell = row.GetCell(3);
+                string valueValue = string.Empty;
+                if (valueCell != null)
+                {
+                    valueValue = GetValue(valueCell);
+                    if (string.IsNullOrEmpty(valueValue))
+                    {
+                        continue;
+                    }
+                }
+
+
+                var record = new KVTableRecord()
+                {
+                    Comment = commentValue,
+                    Type = typeValue,
+                    Name = nameValue,
+                    Value = valueValue,
+                };
+
+                configTable.KVRecordList.Add(record);
+
+
+
+
+
+            }
         }
 
 

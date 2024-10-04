@@ -1,5 +1,4 @@
-﻿using ConfigTool.ConfigInfo;
-using AutoConfig;
+﻿using AutoConfig;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ConfigTool.ConfigInfo;
 
 namespace ConfigTool.Gen
 {

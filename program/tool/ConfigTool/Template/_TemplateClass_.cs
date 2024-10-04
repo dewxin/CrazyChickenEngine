@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+#if _TableNameSpace_
+using __TableNameSpaceContent_;
+#endif
+
 
 
 namespace AutoConfig
@@ -11,6 +15,7 @@ namespace AutoConfig
 		_TableKeyEnumContent_
 	}
 #endif
+
 
     public class _TemplateClass_
 	{
@@ -28,10 +33,13 @@ namespace AutoConfig
 	public class _TemplateClass_Ext
 	{
 #if _ExtField_
+		/// <summary>
+		/// _Comment_
+		/// </summary>
 		public _FieldType_ _FieldName_ { get {return Base._FieldName_;} set {Base._FieldName_=value;}}
 #endif
 
-		public _TemplateClass_ Base { get; private set; }
+        public _TemplateClass_ Base { get; private set; }
 
 		public _TemplateClass_Ext()
 		{
@@ -75,6 +83,22 @@ namespace AutoConfig
 		{
 			return key2ConfigDict[key];
 		}
+
+		public static bool TryGetData(_KeyType_ key, out _TemplateClass_Ext data)
+		{
+			return key2ConfigDict.TryGetValue(key, out data);
+		}
+
+        public static bool Contains(_KeyType_ key)
+        {
+            return key2ConfigDict.ContainsKey(key);
+        }
+
+		public static IReadOnlyCollection<_TemplateClass_Ext> GetReadOnlyValues()
+		{
+			return key2ConfigDict.Values;
+		}
+
 #endif
 
     }

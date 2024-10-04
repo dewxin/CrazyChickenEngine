@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace ConfigTool.ConfigInfo
 {
-    public class ConfigTable
+    public partial class ConfigTable
     {
         public string SourceFile { get; set; }
         public string SourceFileDir => Path.GetDirectoryName(SourceFile);
 
         public string Name { get; set; } = string.Empty;
+
+        // UnityEngine, System.Linq
+        public List<string> NameSpaceList { get; set; } = new List<string>();
         //XXX.cs
         public List<string> ReferenceClassFileList { get; set; } = new List<string>();
 
@@ -23,14 +26,15 @@ namespace ConfigTool.ConfigInfo
         public string IDEnumType { get; set; }
         public List<string> IDEnumCodeList { get; set; } = new List<string>();
 
+
         public ConfigTableField GetKeyField()
         {
-            foreach(var column in FieldList)
+            foreach (var column in FieldList)
             {
-                if(column.IsKey)
+                if (column.IsKey)
                     return column;
             }
-            
+
             throw new Exception("no key field");
         }
 
@@ -46,9 +50,9 @@ namespace ConfigTool.ConfigInfo
 
         public ConfigTableField GetFieldByColumn(int column)
         {
-            foreach(var filed in FieldList)
+            foreach (var filed in FieldList)
             {
-                if(filed.ColumnIndex== column) return filed;
+                if (filed.ColumnIndex == column) return filed;
             }
             return null;
         }
@@ -57,7 +61,7 @@ namespace ConfigTool.ConfigInfo
         {
             FieldList.Remove(tableField);
 
-            foreach(var record in RecordList)
+            foreach (var record in RecordList)
             {
                 record.RecordFieldList.RemoveAll(field => field.ColumnIndex == tableField.ColumnIndex);
             }
@@ -69,18 +73,18 @@ namespace ConfigTool.ConfigInfo
             string headerStr = $"TableName={Name} RefClassFile={ReferenceClassFileList.ToString()}";
 
             StringBuilder columnsStrBuilder = new StringBuilder();
-            foreach(var column in FieldList)
+            foreach (var column in FieldList)
             {
                 columnsStrBuilder.AppendLine(column.ToString());
             }
 
-            StringBuilder recordStrBuilder= new StringBuilder();
+            StringBuilder recordStrBuilder = new StringBuilder();
             foreach (var record in RecordList)
             {
                 recordStrBuilder.AppendLine(record.ToString());
             }
 
-            return headerStr+Environment.NewLine+columnsStrBuilder.ToString()+Environment.NewLine+ recordStrBuilder.ToString();
+            return headerStr + Environment.NewLine + columnsStrBuilder.ToString() + Environment.NewLine + recordStrBuilder.ToString();
         }
     }
 }

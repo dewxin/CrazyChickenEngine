@@ -77,10 +77,13 @@ namespace ConfigTool.Gen
 
                     var refClassLines = File.ReadAllLines(refClassFile);
 
+                    stringBuilder.AppendLine($"//这部分代码源文件为 {refClassFile}");
+                    stringBuilder.AppendLine($"#region {classFile}");
                     foreach (var oneLine in refClassLines)
                     {
                         stringBuilder.AppendLine(oneLine.ToString());
                     }
+                    stringBuilder.AppendLine($"#endregion");
                 }
 
 

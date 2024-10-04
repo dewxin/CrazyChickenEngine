@@ -1,5 +1,4 @@
-﻿using ConfigTool.ConfigInfo;
-using AutoConfig;
+﻿using AutoConfig;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ConfigTool.ConfigInfo;
 
 namespace ConfigTool.Gen
 {
@@ -45,9 +45,13 @@ namespace ConfigTool.Gen
             foreach (var record in configTable.RecordList)
             {
                 string keyFieldValue = record.GetRecordFieldValue(keyField);
-                string enumFieldValue = record.GetRecordFieldValue(enumField);
+                var enumRecordField = record.GetRecordField(enumField);
 
-                configTable.IDEnumCodeList.Add($"{enumFieldValue}={keyFieldValue},");
+                //这里 如果 enum字段为空就跳过，不然会生成 " = 1" 这种编译不通过的代码
+                if(enumRecordField.OriginValue != string.Empty)
+                {
+                    configTable.IDEnumCodeList.Add($"{enumRecordField.OriginValue}={keyFieldValue},");
+                }
 
             }
 
@@ -76,16 +80,25 @@ namespace ConfigTool.Gen
             foreach (var record in configTable.RecordList)
             {
 
-                var fieldImportRegion = record.GetRecordFieldValue(importTableField);
+                var recordField = record.GetRecordField(importTableField);
+                var fieldImportRegion = recordField.Value;
+                if(fieldImportRegion.Trim() == string.Empty)
+                {
+                    recordField.Value = ExcelReader.GetDefaultValue(importTableField.Type);
+                    continue;
+                }
 
                 bool InDataRegion = false;
+                bool foundData = false;
                 StringBuilder stringBuilder= new StringBuilder();
                 stringBuilder.AppendLine();
                 foreach (var dataSourceLine in dataSourceLines)
                 {
-                    if(dataSourceLine.StartsWith("#region") && dataSourceLine.Contains(fieldImportRegion))
+                    if(dataSourceLine.StartsWith("#region") && 
+                        dataSourceLine.Replace("#region","").Trim().Equals(fieldImportRegion))
                     {
-                        InDataRegion= true;
+                        InDataRegion = true;
+                        foundData = true;
                         continue;
                     }
 
@@ -101,8 +114,18 @@ namespace ConfigTool.Gen
                     }
                 }
 
-                record.GetRecordField(importTableField).Value = stringBuilder.ToString();
+                if(!foundData)
+                {
+                    recordField.Value = ExcelReader.GetDefaultValue(importTableField.Type);
 
+                    var table = importTableField.Table;
+                    Debug.LogError($"{fieldImportRegion} at {recordField.Cell.Address} of {table.SourceFile} cannot be found in {dataFileName}");
+                }
+
+                if(foundData)
+                {
+                    record.GetRecordField(importTableField).Value = stringBuilder.ToString();
+                }
 
 
             }
